@@ -11,7 +11,7 @@
       <v-divider></v-divider>
 
       <v-list dense nav>
-        <v-list-item v-for="item in items" :key="item.title" link>
+        <v-list-item v-for="item in items" :key="item.title" :to="item.to" link>
           <v-list-item-icon>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-icon>
@@ -32,7 +32,7 @@
     </v-app-bar>
 
     <v-main>
-      <!--  -->
+      <router-view></router-view>
     </v-main>
   </v-app>
 </template>
@@ -44,9 +44,11 @@
       return {
         drawerLeft: null,
         items: [
-          { title: '网关登记', icon: 'mdi-view-dashboard' },
-          { title: '实时监测', icon: 'mdi-image' },
-          { title: '数据', icon: 'mdi-help-box' },
+          { title: '网关登记', icon: 'mdi-ip-network', to: '/gateWay' },
+          { title: '实时监测', icon: 'mdi-monitor-dashboard', to: '/stationMonitor' },
+          { title: '数据', icon: 'mdi-database-arrow-down', to: '/data' },
+          { title: 'Home', icon: 'mdi-help-box', to: '/Home' },
+          { title: 'About', icon: 'mdi-help-box', to: '/About' },
         ],
         right: null,
       }
