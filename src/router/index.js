@@ -5,7 +5,25 @@ import gateWay from '../views/gateWay.vue'
 import stationMonitor from '../views/stationMonitor.vue'
 import data from '../views/data.vue'
 
+
+/* import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+// import App from './App.vue'; */
+/* 
+import Vuex from 'vuex'
+
+Vue.use(ElementUI);
+
+new Vue({
+  el: '#app',
+  render: h => h(App)
+}); */
+
 Vue.use(VueRouter)
+
+
+
+/* s */
 
 const routes = [
   {

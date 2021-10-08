@@ -44,7 +44,7 @@
       return {
         drawerLeft: null,
         items: [
-          { title: '网关登记', icon: 'mdi-ip-network', to: '/gateWay' },
+          { title: '网关配置', icon: 'mdi-ip-network', to: '/gateWay' },
           { title: '实时监测', icon: 'mdi-monitor-dashboard', to: '/stationMonitor' },
           { title: '数据', icon: 'mdi-database-arrow-down', to: '/data' },
           { title: 'Home', icon: 'mdi-help-box', to: '/Home' },
