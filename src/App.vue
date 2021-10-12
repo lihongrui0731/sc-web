@@ -29,6 +29,10 @@
       ></v-app-bar-nav-icon>
 
       <v-toolbar-title>声学成像模块</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-app-bar-nav-icon
+        @click="drawerRight = !drawerRight"
+      ></v-app-bar-nav-icon>
     </v-app-bar>
 
     <v-main>
@@ -38,20 +42,24 @@
 </template>
 
 <script>
-
-  export default {
-    data () {
-      return {
-        drawerLeft: null,
-        items: [
-          { title: '网关配置', icon: 'mdi-ip-network', to: '/gateWay' },
-          { title: '实时监测', icon: 'mdi-monitor-dashboard', to: '/stationMonitor' },
-          { title: '数据', icon: 'mdi-database-arrow-down', to: '/data' },
-          { title: 'Home', icon: 'mdi-help-box', to: '/Home' },
-          { title: 'About', icon: 'mdi-help-box', to: '/About' },
-        ],
-        right: null,
-      }
-    },
-  }
+export default {
+  data() {
+    return {
+      drawerLeft: null,
+      drawerRight: null,
+      items: [
+        { title: "网关配置", icon: "mdi-ip-network", to: "/gateWay" },
+        {
+          title: "实时监测",
+          icon: "mdi-monitor-dashboard",
+          to: "/stationMonitor",
+        },
+        { title: "数据", icon: "mdi-database-arrow-down", to: "/data" },
+        { title: "Test", icon: "mdi-help-box", to: "/Test" },
+        { title: "About", icon: "mdi-help-box", to: "/About" },
+      ],
+      right: null,
+    };
+  },
+};
 </script>

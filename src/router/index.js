@@ -1,9 +1,8 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
-import Gateway from '../views/gateway.vue'
-import data from '../views/data.vue'
-
+import Vue from "vue";
+import VueRouter from "vue-router";
+import Home from "../views/Home.vue";
+import Gateway from "../views/gateway.vue";
+import data from "../views/data.vue";
 
 /* import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
@@ -18,40 +17,39 @@ new Vue({
   render: h => h(App)
 }); */
 
-Vue.use(VueRouter)
-
-
+Vue.use(VueRouter);
 
 /* s */
 
 const routes = [
   {
-    path: '/home',
-    name: 'Home',
-    component: Home
+    path: "/Test",
+    name: "Test",
+    component: Home,
   },
   {
-    path: '/about',
-    name: 'About',
+    path: "/about",
+    name: "About",
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/About.vue"),
   },
   {
-    path: '/gateway',
-    name: 'gateway',
-    component: Gateway
+    path: "/gateway",
+    name: "gateway",
+    component: Gateway,
   },
   {
-    path: '/data',
-    name: 'data',
-    component: data
+    path: "/data",
+    name: "data",
+    component: data,
   },
-]
+];
 
 const router = new VueRouter({
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;

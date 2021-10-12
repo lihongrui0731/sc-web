@@ -2,8 +2,7 @@
   <div>
     <form>
       <label for="newAddress">添加网关</label>
-      <input id="newAdress"
-      v-model="newAddress" />
+      <input id="newAdress" v-model="newAddress" />
       <v-btn elevation="2" @click="addNewAddress">加入</v-btn>
     </form>
     <ul>
@@ -56,3 +55,5 @@ export default {
   },
 };
 </script>
+<style>
+</style>
