@@ -1,13 +1,13 @@
 <template>
   <li>
-    {{ address }}
-    <v-btn v-on:click="$emit('remove',address)">Remove</v-btn>
+    {{ gwAddress }}
+    <v-btn v-on:click="$emit('remove',gwAddress)">Remove</v-btn>
   </li>
 </template>
 
 <script>
 export default {
-  props: ["address"],
+  props: ["gwAddress"],
 };
 </script>
 

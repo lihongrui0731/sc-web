@@ -2,24 +2,14 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import Gateway from "../views/gateway.vue";
-import data from "../views/data.vue";
+import Data from "../views/data.vue";
+import StationMonitor from "../views/stationMonitor.vue"
 
-/* import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
-// import App from './App.vue'; */
-/* 
-import Vuex from 'vuex'
 
-Vue.use(ElementUI);
-
-new Vue({
-  el: '#app',
-  render: h => h(App)
-}); */
 
 Vue.use(VueRouter);
 
-/* s */
+
 
 const routes = [
   {
@@ -42,9 +32,14 @@ const routes = [
     component: Gateway,
   },
   {
+    path: "/stationmonitor",
+    name: "stationMonitor",
+    component: StationMonitor,
+  },
+  {
     path: "/data",
     name: "data",
-    component: data,
+    component: Data,
   },
 ];
 

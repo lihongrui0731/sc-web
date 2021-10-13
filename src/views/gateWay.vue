@@ -17,11 +17,11 @@
 </template>
 
 <script>
-import Address from "./address.vue";
+import gwAddress from "./address.vue";
 
 export default {
   components: {
-    "address-list": Address,
+    "address-list": gwAddress,
   },
   data() {
     return {
@@ -43,9 +43,9 @@ export default {
       });
       this.newAddress = "";
     },
-    removeAddress(address) {
+    removeAddress(gwAddress) {
       for (const item of this.addressList) {
-        if (item.title === address) {
+        if (item.title === gwAddress) {
           this.addressList.splice(this.addressList.indexOf(item), 1);
           break;
         }
