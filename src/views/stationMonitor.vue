@@ -1,26 +1,161 @@
 <template>
-  <div class="box-container">
-    <cam-box
-      ref="box"
-      v-for="(addr, index) in selectedGwAddr"
-      :key="addr"
-      :gw-address="addr"
-      
-    />
-    <!-- @state-changed="onBoxStateChanged" -->
+  <div>
+<!--     <div class="setting-container">
+      <v-app-bar-nav-icon @click.stop="drawerRight = !drawerRight">
+        <template>
+          <v-icon :style="appBarTextStyle">mdi-cog</v-icon>
+        </template>
+      </v-app-bar-nav-icon>
+    </div> -->
+    <div class="box-container">
+      <cam-box
+        ref="box"
+        v-for="(addr, index) in selectedGwAddr"
+        :key="addr"
+        :gw-address="addr"
+      />
+      <!-- @state-changed="onBoxStateChanged" -->
+    </div>
+<!--     <v-navigation-drawer v-model="drawerRight" app clipped right width="308">
+      <aside class="panel panel-opt__wrap">
+        <v-card class="pa-3 mb-3" width="292">
+          <v-card-title> <v-icon>mdi-tune</v-icon>采集参数 </v-card-title>
+
+          <p>
+            <label>频率范围:</label>&nbsp;<span>{{ freqRangeLabel }}</span>
+          </p>
+          <v-range-slider
+            :min="0"
+            :max="24400"
+            step="100"
+            v-model="captureSettings.freqRange"
+          >
+          </v-range-slider>
+
+          <p>
+            <label>距离:</label>&nbsp;<span>{{ distanceLabel }}</span>
+          </p>
+          <v-slider
+            dense
+            :min="100"
+            :max="3500"
+            step="100"
+            v-model="captureSettings.distance"
+          >
+          </v-slider>
+
+          <v-card-actions>
+            <v-btn
+              small
+              :disabled="!gwOpsEnabled"
+              @click="setCaptureParamsMulti"
+              >设置采集参数</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+
+        <v-card class="pa-3 mb-3" width="292">
+          <v-card-title>
+            <v-icon>mdi-play-network-outline</v-icon>设备控制
+          </v-card-title>
+          <v-card-actions>
+            <v-btn
+              small
+              @click="toolbarBtn('record')"
+              title="启动采集"
+              :disabled="!gwOpsEnabled"
+            >
+              <v-icon color="#F44336">mdi-record</v-icon>
+            </v-btn>
+            <v-btn
+              small
+              @click="toolbarBtn('stop')"
+              title="停止采集"
+              :disabled="!gwOpsEnabled"
+            >
+              <v-icon>mdi-stop</v-icon>
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+
+        <v-card class="pa-3" width="292">
+          <v-card-title>
+            <v-icon>mdi-image-auto-adjust</v-icon>成像参数
+          </v-card-title>
+          <v-tabs
+            v-model="imageSettings.modeIndex"
+            @change="imageModeChanged"
+            hide-slider
+          >
+            <v-tab>自动模式</v-tab>
+            <v-tab>阈值模式</v-tab>
+            <v-tab>去噪模式</v-tab>
+          </v-tabs>
+
+          <p class="mt-2">
+            <label>动态范围:</label>&nbsp;<span>{{ dynamicRangeText }}</span>
+          </p>
+          <v-slider
+            :min="0.1"
+            :max="12.0"
+            step=".1"
+            v-model="imageSettings.dynamicRange"
+            :disabled="!gwOpsEnabled"
+            @click="dynamicRangeChanged"
+            @end="dynamicRangeChanged"
+          />
+
+          <div v-if="imageModeValue === 'fixed'">
+            <p>
+              <label>最大值:</label>&nbsp;<span>{{ fixedThresholdText }}</span>
+            </p>
+            <v-slider
+              dense
+              :min="0.1"
+              :max="120.0"
+              step=".1"
+              v-model="imageSettings.fixedThreshold"
+              :disabled="!gwOpsEnabled"
+              @click="fixedThresholdChanged"
+              @end="fixedThresholdChanged"
+            />
+          </div>
+
+          <div v-if="imageModeValue === 'avg'">
+            <p>
+              <label>峰值因子:</label>&nbsp;<span>{{
+                thresholdMarginText
+              }}</span>
+            </p>
+            <v-slider
+              dense
+              :min="5.0"
+              :max="15.0"
+              step=".1"
+              v-model="imageSettings.thresholdMargin"
+              :disabled="!gwOpsEnabled"
+              @click="thresholdMarginChanged"
+              @end="thresholdMarginChanged"
+            />
+          </div>
+        </v-card>
+      </aside>
+    </v-navigation-drawer> -->
   </div>
 </template>
 
 <script>
-import CamBox from "../components/cambox2.vue"
-import * as appConfigModule from "../components/appConfig.js"
+import CamBox from "../components/cambox2.vue";
+import * as appConfigModule from "../components/appConfig.js";
+import gwAddress from "../components/address.vue";
+
 
 export default {
-  components: { 'cam-box': CamBox },
+  components: { "cam-box": CamBox },
   data() {
     return {
       /** 控制左侧面板的显示 */
-      drawerLeft: true,
+      //   drawerLeft: true,
       /** 控制右侧面板的显示 */
       drawerRight: true,
 
@@ -109,5 +244,72 @@ export default {
 </script>
 
 <style>
+.box-container {
+  display: flex;
+  flex-flow: row nowrap;
+  /* justify-content: space-evenly; */
+  justify-content: space-around;
+}
+.setting-container {
+  display: flex;
+  justify-content: flex-end;
+}
 
+/* 设备列表项前的复选框减小间距 */
+.panel .v-card .v-list-item__action:first-child {
+  margin-right: 0;
+}
+
+/* 设备列表限定高度，超长加滚动条 */
+.panel .v-card .scroll-wrap {
+  overflow: auto;
+}
+
+/* 控制“成像参数”tab宽度 */
+.panel .v-card .v-tab {
+  padding: 0;
+  min-width: 80px;
+}
+
+.cambox {
+  margin: 8px 0;
+  border: 1px solid lightgray;
+  position: relative;
+  border-radius: 6px;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.cambox .cam-canvas,
+.cambox .cam-video {
+  margin: 0 -1px;
+}
+
+.cambox .info-row {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-start;
+  font-size: 12px;
+  padding: 0 12px;
+}
+
+.cambox .info-row .v-input,
+.cambox .info-row .v-label {
+  margin: 0 4px 0 0;
+  font-size: 12px;
+}
+
+.cambox .info-cell {
+  display: inline-block;
+  color: rgba(0, 0, 0, 0.38);
+  margin-right: 12px;
+}
+
+.cambox .info-row.top .info-cell {
+  margin-top: 8px;
+}
+
+.cambox .info-row.bottom .info-cell {
+  margin-bottom: 8px;
+}
 </style>

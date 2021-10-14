@@ -9,7 +9,7 @@
       <address-list
         v-for="item in addressList"
         :key="item.id"
-        :address="item.title"
+        :gwAddress="item.title"
         @remove="removeAddress"
       ></address-list>
     </ul>
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import gwAddress from "./address.vue";
+import gwAddress from "../components/address.vue";
 
 export default {
   components: {
