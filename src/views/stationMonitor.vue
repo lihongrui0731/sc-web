@@ -243,7 +243,7 @@ export default {
     },
   },
   mounted(){
-   this.selectedGwAddr = localStorage.getItem('addressList')
+   this.selectedGwAddr = JSON.parse(localStorage.getItem('gwAddress'))
   },
 };
 </script>
