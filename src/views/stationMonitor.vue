@@ -10,6 +10,7 @@
     <div class="box-container">
       <cam-box
         ref="box"
+        
         v-for="(addr, index) in selectedGwAddr"
         :key="addr"
         :gw-address="addr"
@@ -147,11 +148,12 @@
 <script>
 import CamBox from "../components/cambox2.vue";
 import * as appConfigModule from "../components/appConfig.js";
-import gwAddress from "../components/address.vue";
+// import gwAddress from "../components/address.vue";
 
-
+// let selectedGwAddr = localStorage.getItem('gwAddress')
 export default {
   components: { "cam-box": CamBox },
+  props: [ 'gwAddress'],
   data() {
     return {
       /** 控制左侧面板的显示 */
@@ -172,7 +174,7 @@ export default {
       gwAddresses: [...appConfigModule.gwAddresses],
 
       /** 当前选定要连接的网关地址 */
-      selectedGwAddr: ["11111111", "11222222"],
+      selectedGwAddr: [ ],
       /** 是否可对网关发出操作，由当前已连接的各网关的状态决定 */
       gwOpsEnabled: false,
 
@@ -240,13 +242,16 @@ export default {
       return imageModes[this.imageSettings.modeIndex];
     },
   },
+  mounted(){
+   this.selectedGwAddr = localStorage.getItem('addressList')
+  },
 };
 </script>
 
 <style>
 .box-container {
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   /* justify-content: space-evenly; */
   justify-content: space-around;
 }

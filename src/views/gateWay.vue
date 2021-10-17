@@ -42,6 +42,8 @@ export default {
         title: this.newAddress,
       });
       this.newAddress = "";
+      // localStorage.setItem('addressList.title', JSON.stringify(this.addressList.title));
+      localStorage.setItem("addressList", "addressList.title")
     },
     removeAddress(gwAddress) {
       for (const item of this.addressList) {
@@ -51,6 +53,7 @@ export default {
         }
       }
     },
+    
     method3() {},
   },
 };
