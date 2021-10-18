@@ -164,7 +164,12 @@
     </v-navigation-drawer>
 
     <v-main>
-      <router-view></router-view>
+      <keep-alive>
+      <!-- <router-view></router-view> -->
+      <router-view v-if="$route.meta.keepAlive"></router-view>
+       </keep-alive>
+      <router-view v-if="!$route.meta.keepAlive"></router-view>
+   
     </v-main>
   </v-app>
 </template>

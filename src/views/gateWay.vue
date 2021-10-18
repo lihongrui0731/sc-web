@@ -1,19 +1,27 @@
 <template>
-  <div>
+  
+  <v-card
+  class="mx-auto"
+    color="#C7D1D5"
+    dark
+    max-width="500">
     <form>
       <label for="newAddress">添加网关</label>
       <input id="newAdress" v-model="newAddress" />
-      <v-btn elevation="2" @click="addNewAddress">加入</v-btn>
+      <v-btn elevation="2" depressed small @click="addNewAddress">加入</v-btn>
     </form>
     <ul>
+    
       <address-list
         v-for="item in addressList"
         :key="item.id"
-        :gwAddress="item.title"
+        :gwAddress="item"
         @remove="removeAddress"
       ></address-list>
+      
     </ul>
-  </div>
+  </v-card>
+  
 </template>
 
 <script>
@@ -27,28 +35,29 @@ export default {
     return {
       newAddress: "",
       addressList: [
-        {
-          id: 1,
-          title: "192.168.1.151",
-        },
+        
+          // id: 1,
+         "192.168.1.151",
+        
       ],
       nextAdress: 2,
     };
   },
   methods: {
     addNewAddress() {
-      this.addressList.push({
-        id: this.nextAdressId++,
-        title: this.newAddress,
-      });
+      this.addressList.push(
+        // id: this.nextAdressId++,
+       this.newAddress,
+      );
       this.newAddress = "";
-      // localStorage.setItem('addressList', "JSON.stringify(this.addressList.title)");
-      // localStorage.setItem("addressList", this.addressList.title)
-      localStorage.gwAddress= this.addressList.title
+      localStorage.setItem('addressList', JSON.stringify(this.addressList));
+      // localStorage.setItem("addressList", this.addressList)
+      // localStorage.gwAddress= this.addressList.title
     },
     removeAddress(gwAddress) {
       for (const item of this.addressList) {
-        if (item.title === gwAddress) {
+        if (item === gwAddress) {
+          localStorage.removeItem('addressList');
           this.addressList.splice(this.addressList.indexOf(item), 1);
           break;
         }

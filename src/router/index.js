@@ -30,16 +30,19 @@ const routes = [
     path: "/gateway",
     name: "gateway",
     component: Gateway,
+    meta: {keepAlive: true}
   },
   {
     path: "/stationmonitor",
     name: "stationMonitor",
     component: StationMonitor,
+    meta: {keepAlive: false}
   },
   {
     path: "/data",
     name: "data",
     component: Data,
+    meta: {keepAlive: true}
   },
 ];
 

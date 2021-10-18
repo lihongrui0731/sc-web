@@ -148,12 +148,12 @@
 <script>
 import CamBox from "../components/cambox2.vue";
 import * as appConfigModule from "../components/appConfig.js";
-// import gwAddress from "../components/address.vue";
+import addressList from "../components/address.vue";
 
 // let selectedGwAddr = localStorage.getItem('gwAddress')
 export default {
   components: { "cam-box": CamBox },
-  props: [ 'gwAddress'],
+  props: [ 'gwAddress', 'addressList'],
   data() {
     return {
       /** 控制左侧面板的显示 */
@@ -243,7 +243,7 @@ export default {
     },
   },
   mounted(){
-   this.selectedGwAddr = JSON.parse(localStorage.getItem('gwAddress'))
+   this.selectedGwAddr = JSON.parse( localStorage.getItem('addressList'))
   },
 };
 </script>

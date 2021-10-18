@@ -1,8 +1,13 @@
 <template>
+
   <li>
     {{ gwAddress }}
-    <v-btn v-on:click="$emit('remove',gwAddress)">Remove</v-btn>
+    <v-btn 
+    small
+    depressed
+    v-on:click="$emit('remove',gwAddress)">Remove</v-btn>
   </li>
+  
 </template>
 
 <script>

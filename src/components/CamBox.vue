@@ -52,7 +52,7 @@
 <script>
 import WsClient from './WsClient.js'
 import HlsPlayer from './HlsPlayer.js'
-import ImgLoader from './ImgLoader.js'
+// import ImgLoader from './ImgLoader.js'
 
 const wsPort = 6380
 const wsInitConnDelay = 30 // 首次连接的延迟
