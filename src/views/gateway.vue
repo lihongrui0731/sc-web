@@ -69,4 +69,7 @@ export default {
 };
 </script>
 <style>
+input {
+  border: thick double #32a1ce;
+}
 </style>
