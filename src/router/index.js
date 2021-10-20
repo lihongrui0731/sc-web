@@ -42,7 +42,7 @@ const routes = [
     path: "/data",
     name: "data",
     component: Data,
-    meta: {keepAlive: true}
+    meta: {keepAlive: false}
   },
 ];
 

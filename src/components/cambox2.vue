@@ -45,6 +45,11 @@
     <div class="info-row bottom">
       <span class="info-cell">{{ deviceInfoText }}</span>
     </div>
+    <!-- charts -->
+    <div>
+
+
+    </div>
   </div>
 </template>
 <script>
