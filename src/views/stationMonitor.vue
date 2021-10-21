@@ -11,7 +11,7 @@
       <cam-box
         ref="box"
         
-        v-for="(addr, index) in selectedGwAddr"
+        v-for="(addr) in selectedGwAddr"
         :key="addr"
         :gw-address="addr"
       />
@@ -153,7 +153,7 @@ import addressList from "../components/address.vue";
 // let selectedGwAddr = localStorage.getItem('gwAddress')
 export default {
   components: { "cam-box": CamBox },
-  props: [ 'gwAddress', 'addressList'],
+  // props: [ 'gwAddress', 'addressList'],
   data() {
     return {
       /** 控制左侧面板的显示 */
