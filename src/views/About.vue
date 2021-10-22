@@ -1,62 +1,93 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
-    <div id="todo-list-example">
-      <form @submit.prevent="addNewTodo">
-        <label for="new-todo">Add a todo</label>
-        <input
-          v-model="newTodoText"
-          id="new-todo"
-          placeholder="E.g. Feed the cat."
-        />
-        <button @click="addNewTodo">Add</button>
-      </form>
-
-      <ul>
-        <li
-          is="todo-item"
-          v-for="(todo, index) in todos"
-          :key="todo.id"
-          :title="todo.title"
-          @remove="todos.splice(index, 1)"
-        >
-          {{ title }}
-        </li>
-      </ul>
+  <div>
+    <!--  <v-card class="mx-auto" tile>
+      <v-list-item>
+        <v-list-item-content>
+          <v-btn
+            v-for="addr in selectedGwAddr"
+            :key="addr"
+            :gw-address="addr"
+            @click="linkFile(addr)"
+          >
+            <label>
+              {{ addr }}
+            </label>
+          </v-btn>
+        </v-list-item-content>
+      </v-list-item>
+    </v-card> -->
+    <div class="d-flex">
+      <v-checkbox v-model="disabled" label="LOCK"></v-checkbox>
     </div>
+    <v-expansion-panels v-model="panel" :disabled="disabled" multiple>
+      <v-expansion-panel
+        v-for="addr in selectedGwAddr"
+        :key="addr"
+        :gw-address="addr"
+        @click="loadLinks()"
+      >
+        <!-- <v-expansion-panel-header>{{ addr }}</v-expansion-panel-header> -->
+        <v-expansion-panel-header>{{addr}}</v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <v-data-table
+            :headers="headers"
+            :items="downloadLinks"
+            :items-per-page="5"
+            class="elevation-1"
+          >
+          </v-data-table>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
   </div>
 </template>
 
 <script>
+import fileListService from "../services/fileList";
+
 export default {
   data() {
     return {
-      newTodoText: "",
-      todos: [
-        {
-          id: 1,
-          title: "Do the dishes",
-        },
-        {
-          id: 2,
-          title: "Take out the trash",
-        },
-        {
-          id: 3,
-          title: "Mow the lawn",
-        },
+      //panel属性
+      panel: [0, 1],
+      disabled: false,
+
+      selectedGwAddr: [],
+
+      // downloadLinks: [{ name: results }],
+
+      headers: [
+        { text: "Name", align: "start", sortable: false, value: "name" },
+        { text: "Time", value: "time" },
+        { text: "Size", value: "size" },
       ],
-      nextTodoId: 4,
+      downloadLinks: [
+        { name: "", time: "", size: "" },
+        // { name: "downloadLink2", time: "YYYMMDDHHmmss", size: "188M" },
+        // { name: " 1", time: "YYYMMDDHHmmss", size: "188M" },
+      ],
+      downloadLink: "",
     };
   },
+
   methods: {
-    addNewTodo: function () {
-      this.todos.push({
-        id: this.nextTodoId++,
-        title: this.newTodoText,
-      });
-      this.newTodoText = "";
+    async linkFile(addr) {
+      let results = await fileListService.getDataByDevice();
+      console.log(results);
+      return results;
     },
+
+    loadLinks() {
+      // this.downloadLink = results;
+
+      this.downloadLinks.push({ name: this.downloadLink });
+      console.log(this.downloadLink);
+    },
+  },
+  mounted() {
+    this.selectedGwAddr = JSON.parse(localStorage.getItem("addressList"));
   },
 };
 </script>
+<style>
+</style>

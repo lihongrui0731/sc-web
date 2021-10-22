@@ -191,7 +191,7 @@ export default {
         },
         { title: "数据", icon: "mdi-database-arrow-down", to: "/data" },
         { title: "Test", icon: "mdi-help-box", to: "/Test" },
-        { title: "About", icon: "mdi-help-box", to: "/About" },
+        { title: "Arcade", icon: "mdi-help-box", to: "/About" },
       ],
       right: null,
       /** 控制左侧面板的显示 */
