@@ -16,15 +16,15 @@
         </v-list-item-content>
       </v-list-item>
     </v-card> -->
-    <div class="d-flex">
+    <!-- <div class="d-flex">
       <v-checkbox v-model="disabled" label="LOCK"></v-checkbox>
-    </div>
+    </div> -->
     <v-expansion-panels v-model="panel" :disabled="disabled" multiple>
       <v-expansion-panel
         v-for="addr in selectedGwAddr"
         :key="addr"
         :gw-address="addr"
-        @click="loadLinks()"
+        @click="loadLinks(addr)"
       >
         <!-- <v-expansion-panel-header>{{ addr }}</v-expansion-panel-header> -->
         <v-expansion-panel-header>{{addr}}</v-expansion-panel-header>
@@ -44,7 +44,6 @@
 
 <script>
 import fileListService from "../services/fileList";
-
 export default {
   data() {
     return {
@@ -62,30 +61,32 @@ export default {
         { text: "Size", value: "size" },
       ],
       downloadLinks: [
-        { name: "", time: "", size: "" },
+        { name: " " },
         // { name: "downloadLink2", time: "YYYMMDDHHmmss", size: "188M" },
         // { name: " 1", time: "YYYMMDDHHmmss", size: "188M" },
       ],
-      downloadLink: "",
+      downloadLink: "11",
     };
   },
 
   methods: {
     async linkFile(addr) {
       let results = await fileListService.getDataByDevice();
-      console.log(results);
+     
       return results;
     },
 
-    loadLinks() {
+    loadLinks(addr) {
       // this.downloadLink = results;
 
-      this.downloadLinks.push({ name: this.downloadLink });
-      console.log(this.downloadLink);
+      this.downloadLinks.push( {name: this.results, time: 111, size:111}, {}, {} );
+      // this.downloadLink=''
+      
     },
   },
   mounted() {
     this.selectedGwAddr = JSON.parse(localStorage.getItem("addressList"));
+    // this.downloadLinks = JSON.parse(localStorage.getItem("addressList"));
   },
 };
 </script>

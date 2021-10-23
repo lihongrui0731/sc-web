@@ -51,8 +51,6 @@ export default {
       );
       this.newAddress = "";
       localStorage.setItem('addressList', JSON.stringify(this.addressList));
-      // localStorage.setItem("addressList", this.addressList)
-      // localStorage.gwAddress= this.addressList.title
     },
     removeAddress(gwAddress) {
       for (const item of this.addressList) {

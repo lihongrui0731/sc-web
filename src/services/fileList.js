@@ -2,8 +2,8 @@ import axios from "axios";
 
 const path = ''
 class FileListService {
-    async getDataByDevice(dvId){
-        return [{name:"address/tdms"}]
+    async getDataByDevice( ){
+        return ("address/tdms")
         // axios
         // .get(`${path}`, {params: { device: dvId }})
         // .then((res)=> res.data)
