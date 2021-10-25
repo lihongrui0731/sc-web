@@ -1,7 +1,7 @@
 <template>
   <li>
     {{ address }}
-    <v-btn v-on:click="$emit('remove',address)">Remove</v-btn>
+    <v-btn x-small v-on:click="$emit('remove', address)">Remove</v-btn>
   </li>
 </template>
 

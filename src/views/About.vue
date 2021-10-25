@@ -61,9 +61,9 @@ export default {
         { text: "Size", value: "size" },
       ],
       downloadLinks: [
-        { name: " " },
-        // { name: "downloadLink2", time: "YYYMMDDHHmmss", size: "188M" },
-        // { name: " 1", time: "YYYMMDDHHmmss", size: "188M" },
+        // { name: " " },
+        { name: "downloadLink1", time: "YYYMMDDHHmmss", size: "188M" },
+        { name: "downloadLink2", time: "YYYMMDDHHmmss", size: "188M" },
       ],
       downloadLink: "11",
     };
@@ -79,11 +79,12 @@ export default {
     loadLinks(addr) {
       // this.downloadLink = results;
 
-      this.downloadLinks.push( {name: this.results, time: 111, size:111}, {}, {} );
+      this.downloadLinks.fill( {name: this.results});
       // this.downloadLink=''
       
     },
   },
+  
   mounted() {
     this.selectedGwAddr = JSON.parse(localStorage.getItem("addressList"));
     // this.downloadLinks = JSON.parse(localStorage.getItem("addressList"));
