@@ -1,44 +1,38 @@
 <template>
-  <div>
-    <!--  <v-card class="mx-auto" tile>
-      <v-list-item>
-        <v-list-item-content>
-          <v-btn
-            v-for="addr in selectedGwAddr"
-            :key="addr"
-            :gw-address="addr"
-            @click="linkFile(addr)"
+  <div class="container">
+    <div class="addrSelect">
+      <v-card max-width="500">
+        <v-list>
+          <v-list-item-group
+            v-model="model"
+            active-class="border"
+            color="indigo"
           >
-            <label>
-              {{ addr }}
-            </label>
-          </v-btn>
-        </v-list-item-content>
-      </v-list-item>
-    </v-card> -->
-    <!-- <div class="d-flex">
-      <v-checkbox v-model="disabled" label="LOCK"></v-checkbox>
-    </div> -->
-    <v-expansion-panels v-model="panel" :disabled="disabled" multiple>
-      <v-expansion-panel
-        v-for="addr in selectedGwAddr"
-        :key="addr"
-        :gw-address="addr"
-        @click="loadLinks(addr)"
+            <v-list-item
+              v-for="addr in selectedGwAddr"
+              :key="addr"
+              @click="loadLinks(addr)"
+            >
+              <!-- 网关地址 -->
+              <v-list-item-content>
+                <v-list-item-title>{{ addr }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+      </v-card>
+    </div>
+    <div class="dataTable">
+      <!-- v-for="addr in selectedGwAddr" -->
+      <!-- :key="addr" -->
+      <v-data-table
+        :headers="headers"
+        :items="downloadLinks"
+        :items-per-page="10"
+        class="elevation-1"
       >
-        <!-- <v-expansion-panel-header>{{ addr }}</v-expansion-panel-header> -->
-        <v-expansion-panel-header>{{addr}}</v-expansion-panel-header>
-        <v-expansion-panel-content>
-          <v-data-table
-            :headers="headers"
-            :items="downloadLinks"
-            :items-per-page="5"
-            class="elevation-1"
-          >
-          </v-data-table>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-expansion-panels>
+      </v-data-table>
+    </div>
   </div>
 </template>
 
@@ -52,39 +46,35 @@ export default {
       disabled: false,
 
       selectedGwAddr: [],
-
-      // downloadLinks: [{ name: results }],
-
+      //dataTable
       headers: [
         { text: "Name", align: "start", sortable: false, value: "name" },
         { text: "Time", value: "time" },
         { text: "Size", value: "size" },
       ],
       downloadLinks: [
-        // { name: " " },
+        // { name: " ", time: " ", size: " " },
         { name: "downloadLink1", time: "YYYMMDDHHmmss", size: "188M" },
-        { name: "downloadLink2", time: "YYYMMDDHHmmss", size: "188M" },
+        // { name: "downloadLink2", time: "YYYMMDDHHmmss", size: "188M" },
       ],
-      downloadLink: "11",
+      
     };
   },
 
   methods: {
     async linkFile(addr) {
-      let results = await fileListService.getDataByDevice();
-     
+      let results = await fileListService.getDataByDevice(addr);
+
       return results;
     },
 
     loadLinks(addr) {
-      // this.downloadLink = results;
+      this.linkFile(addr);
 
-      this.downloadLinks.fill( {name: this.results});
-      // this.downloadLink=''
-      
+      this.downloadLinks.splice({ name: this.results, time: "1", size: "2" });
     },
   },
-  
+
   mounted() {
     this.selectedGwAddr = JSON.parse(localStorage.getItem("addressList"));
     // this.downloadLinks = JSON.parse(localStorage.getItem("addressList"));
@@ -92,4 +82,12 @@ export default {
 };
 </script>
 <style>
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.border {
+  border: 2px dashed orange;
+}
 </style>

@@ -183,7 +183,7 @@ export default {
       drawerLeft: null,
       drawerRight: null,
       items: [
-        { title: "网关配置", icon: "mdi-ip-network", to: "/gateWay" },
+        { title: "网关配置", icon: "mdi-ip-network", to: "/gateway" },
         {
           title: "实时监测",
           icon: "mdi-monitor-dashboard",
