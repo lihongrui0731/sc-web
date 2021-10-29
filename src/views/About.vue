@@ -4,7 +4,7 @@
       <v-card max-width="500">
         <v-list>
           <v-list-item-group
-            v-model="model"
+            
             active-class="border"
             color="indigo"
           >
@@ -22,15 +22,20 @@
         </v-list>
       </v-card>
     </div>
+
+    <!-- 表格 -->
     <div class="dataTable">
-      <!-- v-for="addr in selectedGwAddr" -->
-      <!-- :key="addr" -->
       <v-data-table
         :headers="headers"
         :items="downloadLinks"
         :items-per-page="10"
         class="elevation-1"
       >
+      <template
+      v-slot:
+      >
+
+      </template>
       </v-data-table>
     </div>
   </div>
@@ -38,6 +43,8 @@
 
 <script>
 import fileListService from "../services/fileList";
+
+//  let results= new Array();
 export default {
   data() {
     return {
@@ -49,12 +56,12 @@ export default {
       //dataTable
       headers: [
         { text: "Name", align: "start", sortable: false, value: "name" },
-        { text: "Time", value: "time" },
+        { text: "Time", value: "mtime" },
         { text: "Size", value: "size" },
       ],
       downloadLinks: [
         // { name: " ", time: " ", size: " " },
-        { name: "downloadLink1", time: "YYYMMDDHHmmss", size: "188M" },
+        { name: "downloadLink1", time: "YYYMMDDHHmmss", size: "---" },
         // { name: "downloadLink2", time: "YYYMMDDHHmmss", size: "188M" },
       ],
       
@@ -62,16 +69,12 @@ export default {
   },
 
   methods: {
-    async linkFile(addr) {
-      let results = await fileListService.getDataByDevice(addr);
-
-      return results;
-    },
-
-    loadLinks(addr) {
-      this.linkFile(addr);
-
-      this.downloadLinks.splice({ name: this.results, time: "1", size: "2" });
+   
+    async loadLinks(addr) {
+      const results= await fileListService.getDataByDevice(addr);
+      // this.downloadLinks.splice(0, this.downloadLinks.length, results);
+      this.downloadLinks = results;
+      console.log(results)
     },
   },
 
