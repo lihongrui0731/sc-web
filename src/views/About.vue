@@ -4,12 +4,12 @@
       <v-card max-width="500">
         <v-list>
           <v-list-item-group
-            
             active-class="border"
             color="indigo"
+            @change="onSelectedChange"
           >
             <v-list-item
-              v-for="addr in selectedGwAddr"
+              v-for="addr in selectedGwAddrs"
               :key="addr"
               @click="loadLinks(addr)"
             >
@@ -27,14 +27,16 @@
     <div class="dataTable">
       <v-data-table
         :headers="headers"
-        :items="downloadLinks"
+        :items="fileLinks"
         :items-per-page="10"
         class="elevation-1"
       >
       <template
-      v-slot:
+      v-slot:item.name="{item}"
       >
-
+<a :href="`http://${selectedGwAddr}/tdms/${item.name}`" >
+  {{item.name}}
+  </a>
       </template>
       </v-data-table>
     </div>
@@ -44,27 +46,23 @@
 <script>
 import fileListService from "../services/fileList";
 
-//  let results= new Array();
 export default {
   data() {
     return {
-      //panel属性
-      panel: [0, 1],
-      disabled: false,
-
-      selectedGwAddr: [],
+selectedGwAddr: null,
+      selectedGwAddrs: [],
       //dataTable
       headers: [
         { text: "Name", align: "start", sortable: false, value: "name" },
         { text: "Time", value: "mtime" },
         { text: "Size", value: "size" },
       ],
-      downloadLinks: [
-        // { name: " ", time: " ", size: " " },
-        { name: "downloadLink1", time: "YYYMMDDHHmmss", size: "---" },
-        // { name: "downloadLink2", time: "YYYMMDDHHmmss", size: "188M" },
+      fileLinks: [
+        { name: "---", time: "00", size: "---" },
       ],
-      
+     /*  slots: [
+        fileLinks.name
+      ] */
     };
   },
 
@@ -72,15 +70,16 @@ export default {
    
     async loadLinks(addr) {
       const results= await fileListService.getDataByDevice(addr);
-      // this.downloadLinks.splice(0, this.downloadLinks.length, results);
-      this.downloadLinks = results;
-      console.log(results)
+      this.fileLinks = results;
     },
+    onSelectedChange(index) {
+      this.selectedGwAddr = this.selectedGwAddrs[index]
+      console.log(index)
+    }
   },
 
   mounted() {
-    this.selectedGwAddr = JSON.parse(localStorage.getItem("addressList"));
-    // this.downloadLinks = JSON.parse(localStorage.getItem("addressList"));
+    this.selectedGwAddrs = JSON.parse(localStorage.getItem("addressList"));
   },
 };
 </script>

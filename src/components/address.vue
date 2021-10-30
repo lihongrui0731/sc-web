@@ -1,6 +1,7 @@
 <template>
 
-  <li>
+  <li
+  :value="addr">
     {{ gwAddress }}
     <v-btn 
     small
@@ -14,6 +15,12 @@
 
 export default {
   props: ["gwAddress"],
+  data() {
+    addr = null
+  },
+  methods:{
+    
+  }
 };
 </script>
 

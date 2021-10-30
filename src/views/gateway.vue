@@ -39,10 +39,7 @@ export default {
   data() {
     return {
       newAddress: "",
-      addressList: [
-        // id: 1,
-        "192.168.1.151",
-      ],
+      addressList: [  ],
       nextAdress: 2,
     };
   },

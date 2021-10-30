@@ -27,7 +27,7 @@
         <v-expansion-panel-content>
           <v-data-table
             :headers="headers"
-            :items="downloadLinks"
+            :items="fileLinks"
             :items-per-page="5"
             class="elevation-1"
           >
@@ -50,14 +50,14 @@ export default {
 
       selectedGwAddr: [],
 
-      // downloadLinks: [{ name: results }],
+      // fileLinks: [{ name: results }],
 downloadLink : "",
       headers: [
         { text: "Name", align: "start", sortable: false, value: "name" },
         { text: "Time", value: "time" },
         { text: "Size", value: "size" },
       ],
-      downloadLinks: [
+      fileLinks: [
         { name: "downloadLink1", time: "YYYMMDDHHmmss", size: "188M" },
         { name: "downloadLink2", time: "YYYMMDDHHmmss", size: "188M" },
         { name: " 1", time: "YYYMMDDHHmmss", size: "188M" },
@@ -76,7 +76,7 @@ downloadLink : "",
 
     loadLinks() {
       this.downloadLink=results;
-      this.downloadLinks.name.push(this.downloadLink);
+      this.fileLinks.name.push(this.downloadLink);
       console.log(this.downloadLink);
       
     },
