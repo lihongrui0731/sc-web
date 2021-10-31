@@ -1,40 +1,45 @@
 <template>
-  <div>
-    <!--  <v-card class="mx-auto" tile>
-      <v-list-item>
-        <v-list-item-content>
-          <v-btn
-            v-for="addr in selectedGwAddr"
-            :key="addr"
-            :gw-address="addr"
-            @click="linkFile(addr)"
+  <div class="container">
+    <div class="addrSelect">
+      <v-card max-width="500">
+        <v-list>
+          <v-list-item-group
+            active-class="border"
+            color="indigo"
+            @change="onSelectedChange"
           >
-            <label>
-              {{ addr }}
-            </label>
-          </v-btn>
-        </v-list-item-content>
-      </v-list-item>
-    </v-card> -->
-    <div class="d-flex">
-      <v-checkbox v-model="disabled" label="LOCK"></v-checkbox>
+            <v-list-item
+              v-for="addr in selectedGwAddrs"
+              :key="addr"
+              @click="loadLinks(addr)"
+            >
+              <!-- 网关地址 -->
+              <v-list-item-content>
+                <v-list-item-title>{{ addr }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+      </v-card>
     </div>
-    <v-expansion-panels v-model="panel" :disabled="disabled" multiple>
-      <v-expansion-panel :key="addr" :gw-address="addr" @click="linkFile(addr)">
-        <!-- v-for="addr in selectedGwAddr" -->
-        <!-- <v-expansion-panel-header>{{ addr }}</v-expansion-panel-header> -->
-        <v-expansion-panel-header>192.168.1.151</v-expansion-panel-header>
-        <v-expansion-panel-content>
-          <v-data-table
-            :headers="headers"
-            :items="fileLinks"
-            :items-per-page="5"
-            class="elevation-1"
-          >
-          </v-data-table>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-expansion-panels>
+
+    <!-- 表格 -->
+    <div class="dataTable">
+      <v-data-table
+        :headers="headers"
+        :items="fileLinks"
+        :items-per-page="10"
+        class="elevation-1"
+      >
+      <template
+      v-slot:item.name="{item}"
+      >
+<a :href="`http://${selectedGwAddr}/tdms/${item.name}`" >
+  {{item.name}}
+  </a>
+      </template>
+      </v-data-table>
+    </div>
   </div>
 </template>
 
@@ -44,49 +49,47 @@ import fileListService from "../services/fileList";
 export default {
   data() {
     return {
-      //panel属性
-      panel: [0, 1],
-      disabled: false,
-
-      selectedGwAddr: [],
-
-      // fileLinks: [{ name: results }],
-downloadLink : "",
+selectedGwAddr: null,
+      selectedGwAddrs: [],
+      //dataTable
       headers: [
         { text: "Name", align: "start", sortable: false, value: "name" },
-        { text: "Time", value: "time" },
+        { text: "Time", value: "mtime" },
         { text: "Size", value: "size" },
       ],
       fileLinks: [
-        { name: "downloadLink1", time: "YYYMMDDHHmmss", size: "188M" },
-        { name: "downloadLink2", time: "YYYMMDDHHmmss", size: "188M" },
-        { name: " 1", time: "YYYMMDDHHmmss", size: "188M" },
+        { name: "---", time: "00", size: "---" },
       ],
+     /*  slots: [
+        fileLinks.name
+      ] */
     };
   },
 
   methods: {
-    async linkFile(addr) {
-      let results = await fileListService.getDataByDevice();
-      console.log(results);
-      return results;
+   
+    async loadLinks(addr) {
+      const results= await fileListService.getDataByDevice(addr);
+      this.fileLinks = results;
     },
-
-
-
-    loadLinks() {
-      this.downloadLink=results;
-      this.fileLinks.name.push(this.downloadLink);
-      console.log(this.downloadLink);
-      
-    },
-
+    onSelectedChange(index) {
+      this.selectedGwAddr = this.selectedGwAddrs[index]
+      console.log(index)
+    }
   },
+
   mounted() {
-    this.selectedGwAddr = JSON.parse(localStorage.getItem("addressList"));
-    
+    this.selectedGwAddrs = JSON.parse(localStorage.getItem("addressList"));
   },
 };
 </script>
 <style>
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.border {
+  border: 2px dashed orange;
+}
 </style>

@@ -39,8 +39,9 @@ export default {
   data() {
     return {
       newAddress: "",
-      addressList: [  ],
+      addressList: [ "123" ],
       nextAdress: 2,
+      // list: []
     };
   },
   methods: {
@@ -51,6 +52,7 @@ export default {
       );
       this.newAddress = "";
       localStorage.setItem("addressList", JSON.stringify(this.addressList));
+      // this.list = JSON.parse( localStorage.getItem('addressList'))
     },
     removeAddress(gwAddress) {
       for (const item of this.addressList) {
