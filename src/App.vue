@@ -197,7 +197,7 @@ export default {
       /** 控制左侧面板的显示 */
       drawerLeft: true,
       /** 控制右侧面板的显示 */
-      drawerRight: true,
+      drawerRight: false,
 
       // appInfo: appConfigModule.appInfo,
       // uiOptions: appConfigModule.uiOptions,
