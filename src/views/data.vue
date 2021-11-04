@@ -61,9 +61,6 @@ selectedGwAddr: null,
       fileLinks: [
         // { name: "", time: "", size: "" },
       ],
-     /*  slots: [
-        fileLinks.name
-      ] */
     };
   },
 

@@ -5,7 +5,7 @@
       style="display: none"
       src="data:image/png;base64,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"
     />
-     <ws-client
+    <ws-client
       ref="wsClient"
       :uri="wsUri"
       @state-changed="onWsStateChanged"
@@ -44,17 +44,23 @@
     />
     <div class="info-row bottom">
       <span class="info-cell">{{ deviceInfoText }}</span>
+      <span class="info-cell" v-if="cameraStatus === 'recording'">
+        <v-chip label x-small>
+          <v-icon left color="red">mdi-record-rec</v-icon>采集中...
+        </v-chip>
+      </span>
+      <span class="info-cell" v-if="cameraStatus === 'standby'">
+        <v-chip label x-small>待命</v-chip>
+      </span>
     </div>
     <!-- charts -->
-    <div>
-
-
-    </div>
+    <div></div>
   </div>
 </template>
 <script>
 import ImgLoader from "../components/imgLoader";
-import wsClient from "../components/WsClient.js"
+import wsClient from "../components/WsClient.js";
+import HlsPlayer from "../components/HlsPlayer.js";
 
 const wsPort = 6380;
 const wsInitConnDelay = 30; // 首次连接的延迟
@@ -63,9 +69,11 @@ const maxRetryTimes = 5; // 重试连接次数上限
 
 let hlsPlayer;
 let imageLoader;
-
 export default {
-  components: {wsClient},
+  components: { 
+    // WsClient, 
+  "ws-client": wsClient 
+  },
   props: ["gwAddress"],
   data() {
     return {
@@ -91,6 +99,7 @@ export default {
         endTimestamp: 100,
         position: 0,
       },
+      cameraStatus: "",
     };
   },
   mounted() {
@@ -99,7 +108,7 @@ export default {
       this.checkWsConnection(true);
     }
 
-    // hlsPlayer = new HlsPlayer(this.$refs.camVideo)
+    hlsPlayer = new HlsPlayer(this.$refs.camVideo);
     imageLoader = new ImgLoader(this.$refs.camCanvas);
 
     // show placeholder image

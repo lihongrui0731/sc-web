@@ -33,12 +33,12 @@
 
       <v-spacer></v-spacer>
 
-      <v-app-bar-nav-icon
+      <!-- <v-app-bar-nav-icon
         @click="drawerRight = !drawerRight"
-      ></v-app-bar-nav-icon>
+      ></v-app-bar-nav-icon> -->
     </v-app-bar>
     <!-- 右侧控制面板 -->
-    <v-navigation-drawer v-model="drawerRight" app clipped right width="308">
+   <!--  <v-navigation-drawer v-model="drawerRight" app clipped right width="308">
       <aside class="panel panel-opt__wrap">
         <v-card class="pa-3 mb-3" width="292">
           <v-card-title> <v-icon>mdi-tune</v-icon>采集参数 </v-card-title>
@@ -162,7 +162,7 @@
         </v-card>
       </aside>
     </v-navigation-drawer>
-
+ -->
     <v-main>
       <keep-alive>
       <!-- <router-view></router-view> -->
@@ -175,9 +175,16 @@
 </template>
 
 <script>
+import WsClient from "./components/WsClient.js";
+import gwAddress from "./components/address.vue";
+// import addressList from "./components/address.vue"
+
 var imageModes = ["auto", "fixed", "avg"];
 
 export default {
+  components: {
+    'ws-client': WsClient,
+  },
   data() {
     return {
       drawerLeft: null,
@@ -209,7 +216,7 @@ export default {
       // gwPickMode: appConfigModule.gwPickMode,
 
       /** 可选择的网关地址列表 */
-      // gwAddresses: [...appConfigModule.gwAddresses],
+      gwAddresses: [ ],
 
       /** 当前选定要连接的网关地址 */
       selectedGwAddr: [],
@@ -283,7 +290,7 @@ export default {
   methods: {
     /** 更新是否允许对网关发送操作命令的状态 */
     updateOpEnabled() {
-      if (!this.selectedGwAddr || this.selectedGwAddr.length === 0) {
+      if (!this.gwAddress || this.selectedGwAddr.length === 0) {
         this.gwOpsEnabled = false;
         return;
       }
@@ -371,6 +378,9 @@ export default {
         this.running = null;
       }
     },
+  },
+  mounted() {
+   this.gwAddresses = JSON.parse( localStorage.getItem('addressList'))
   },
 };
 </script>

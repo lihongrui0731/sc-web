@@ -1,6 +1,6 @@
 <template>
   <div>
-<!--     <div class="setting-container">
+    <!--     <div class="setting-container">
       <v-app-bar-nav-icon @click.stop="drawerRight = !drawerRight">
         <template>
           <v-icon :style="appBarTextStyle">mdi-cog</v-icon>
@@ -10,14 +10,18 @@
     <div class="box-container">
       <cam-box
         ref="box"
-        
-        v-for="(addr) in selectedGwAddrs"
+        v-for="addr in selectedGwAddrs"
         :key="addr"
         :gw-address="addr"
       />
       <!-- @state-changed="onBoxStateChanged" -->
     </div>
-<!--     <v-navigation-drawer v-model="drawerRight" app clipped right width="308">
+    
+    <v-app-bar-nav-icon
+        @click="drawerRight = !drawerRight"
+      ></v-app-bar-nav-icon>
+      
+    <v-navigation-drawer v-model="drawerRight" app clipped right width="308">
       <aside class="panel panel-opt__wrap">
         <v-card class="pa-3 mb-3" width="292">
           <v-card-title> <v-icon>mdi-tune</v-icon>采集参数 </v-card-title>
@@ -141,7 +145,8 @@
           </div>
         </v-card>
       </aside>
-    </v-navigation-drawer> -->
+    </v-navigation-drawer>
+    
   </div>
 </template>
 
@@ -149,13 +154,18 @@
 import CamBox from "../components/cambox2.vue";
 import * as appConfigModule from "../components/appConfig.js";
 import addressList from "../components/address.vue";
+import WsClient from "../components/WsClient.js";
+
+var imageModes = ["auto", "fixed", "avg"];
 
 // let selectedGwAddrs = localStorage.getItem('gwAddress')
 export default {
-  components: { "cam-box": CamBox },
+  components: { "cam-box": CamBox,
+  'ws-client': WsClient, },
   // props: [ 'gwAddress', 'addressList'],
   data() {
     return {
+      drawerRight: null,
       /** 控制左侧面板的显示 */
       //   drawerLeft: true,
       /** 控制右侧面板的显示 */
@@ -174,7 +184,7 @@ export default {
       gwAddresses: [...appConfigModule.gwAddresses],
 
       /** 当前选定要连接的网关地址 */
-      selectedGwAddrs: [ ],
+      selectedGwAddrs: [],
       /** 是否可对网关发出操作，由当前已连接的各网关的状态决定 */
       gwOpsEnabled: false,
 
@@ -242,8 +252,100 @@ export default {
       return imageModes[this.imageSettings.modeIndex];
     },
   },
-  mounted(){
-   this.selectedGwAddrs = JSON.parse( localStorage.getItem('addressList'))
+    methods: {
+    /** 更新是否允许对网关发送操作命令的状态 */
+    updateOpEnabled() {
+      if (!this.selectedGwAddrs || this.selectedGwAddr.length === 0) {
+        this.gwOpsEnabled = false;
+        return;
+      }
+
+      console.debug(
+        "checking state of boxes: ",
+        JSON.stringify(this.selectedGwAddr)
+      );
+      this.gwOpsEnabled = this.selectedGwAddr.some((addr) => {
+        if (!this.$refs.box) {
+          console.debug("$refs.box not ready");
+          return false;
+        }
+        const box = this.$refs.box.find((b) => b.$vnode.key === addr);
+
+        console.debug(
+          `box(${box.$vnode.key}): ${box.isWsConnected} ${box.isDeviceConnected}`
+        );
+        return box.isWsConnected && box.isDeviceConnected;
+      });
+    },
+
+    onBoxStateChanged(gwAddress) {
+      //console.debug('box state changed', gwAddress);
+      this.updateOpEnabled();
+      // 与网关建立连接后，发送初始设置
+      this.dynamicRangeChanged();
+    },
+
+    /** 向已建立ws连接并已连接设备的网关发送 rpc 请求 */
+    sendRpcMulti(method, params) {
+      this.selectedGwAddr.forEach((addr) => {
+        const box = this.$refs.box.find((b) => b.gwAddress === addr);
+        if (!box || !box.isDeviceConnected || !box.sendRpc) return;
+
+        console.debug(
+          `sending to ${addr}: ${method} ${JSON.stringify(params)}`
+        );
+        box.sendRpc(method, params);
+      });
+    },
+
+    saveOptions() {
+      const params = { ...this.captureOptions };
+      this.sendRpcMulti(methodName_SetParam, params);
+    },
+
+    /** 设置采集参数 */
+    setCaptureParamsMulti() {
+      const body = { ...this.captureSettings };
+      this.sendRpcMulti(methodName_SetParam, body);
+    },
+
+    imageModeChanged() {
+      this.imageSettings.imageMode = imageModes[this.imageSettings.modeIndex];
+      console.debug("imageMode", this.imageSettings.imageMode);
+      const body = { imageMode: this.imageSettings.imageMode };
+      this.sendRpcMulti(methodName_SetParam, body);
+    },
+    dynamicRangeChanged() {
+      console.debug("dynamicRange", this.imageSettings.dynamicRange);
+      const body = { dynamicRange: this.imageSettings.dynamicRange };
+      this.sendRpcMulti(methodName_SetParam, body);
+    },
+    fixedThresholdChanged() {
+      console.debug("fixedThreshold", this.imageSettings.fixedThreshold);
+      const body = { fixedThreshold: this.imageSettings.fixedThreshold };
+      this.sendRpcMulti(methodName_SetParam, body);
+    },
+    thresholdMarginChanged() {
+      console.debug("thresholdMargin", this.imageSettings.thresholdMargin);
+      const body = { thresholdMargin: this.imageSettings.thresholdMargin };
+      this.sendRpcMulti(methodName_SetParam, body);
+    },
+
+    toolbarBtn(name) {
+      if (name === "record") {
+        // 目前不能在后台完成上一命令前发出别的命令，待后台实现请求排队
+        this.sendRpcMulti(name);
+        this.running = "recording";
+        // this.resetProgress();
+        // imgLoader.clear();
+      } else if (name === "stop") {
+        this.sendRpcMulti(name);
+        this.running = null;
+      }
+    },
+  },
+  mounted() {
+    this.selectedGwAddrs = JSON.parse(localStorage.getItem("addressList"));
   },
 };
 </script>

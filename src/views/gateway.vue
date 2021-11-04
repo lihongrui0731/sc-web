@@ -41,7 +41,6 @@ export default {
       newAddress: "",
       addressList: [],
       nextAdress: 2,
-      // addedAddrs: [],
     };
   },
   methods: {
@@ -57,8 +56,9 @@ export default {
     removeAddress(gwAddress) {
       for (const item of this.addressList) {
         if (item === gwAddress) {
-          localStorage.removeItem("addressList");
+          // localStorage.removeItem("addressList");
           this.addressList.splice(this.addressList.indexOf(item), 1);
+          localStorage.setItem("addressList", JSON.stringify(this.addressList));
           break;
         }
       }
