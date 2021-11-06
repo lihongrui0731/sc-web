@@ -13,8 +13,9 @@
         v-for="addr in selectedGwAddrs"
         :key="addr"
         :gw-address="addr"
+        @state-changed="onBoxStateChanged"
       />
-      <!-- @state-changed="onBoxStateChanged" -->
+      
     </div>
     
     <v-app-bar-nav-icon
@@ -22,7 +23,23 @@
       ></v-app-bar-nav-icon>
       
     <v-navigation-drawer v-model="drawerRight" app clipped right width="308">
+      
       <aside class="panel panel-opt__wrap">
+        <div class="setting-container">
+         <v-card class="pa-3 panel panel-opt" width="292">
+            <v-card-title>
+              <v-icon>mdi-eye-settings-outline</v-icon>采集选项
+            </v-card-title>
+            <v-radio-group v-model="captureOptions.cameraMode" label="相机分辨率 & 帧率:" dense hide-details>
+              <v-radio v-for="m in picks.cameraMode" :key="m.value" :label="m.label" :value="m.value"></v-radio>
+            </v-radio-group>
+            <v-radio-group v-model="captureOptions.acousticFrameRate" label="声学成像帧率:" dense hide-details>
+              <v-radio v-for="m in picks.acousticFrameRate" :key="m.value" :label="m.label" :value="m.value"></v-radio>
+            </v-radio-group>
+            <v-card-actions>
+              <v-btn small @click="saveOptions">保存</v-btn>
+            </v-card-actions>
+          </v-card>
         <v-card class="pa-3 mb-3" width="292">
           <v-card-title> <v-icon>mdi-tune</v-icon>采集参数 </v-card-title>
 
@@ -144,7 +161,9 @@
             />
           </div>
         </v-card>
+        </div>
       </aside>
+      
     </v-navigation-drawer>
     
   </div>
@@ -155,8 +174,10 @@ import CamBox from "../components/cambox2.vue";
 import * as appConfigModule from "../components/appConfig.js";
 import addressList from "../components/address.vue";
 import WsClient from "../components/WsClient.js";
+import hlsPlayer from "../components/HlsPlayer"
 
 var imageModes = ["auto", "fixed", "avg"];
+const methodName_SetParam = 'setParam';
 
 // let selectedGwAddrs = localStorage.getItem('gwAddress')
 export default {
@@ -255,16 +276,16 @@ export default {
     methods: {
     /** 更新是否允许对网关发送操作命令的状态 */
     updateOpEnabled() {
-      if (!this.selectedGwAddrs || this.selectedGwAddr.length === 0) {
+      if (!this.selectedGwAddrs || this.selectedGwAddrs.length === 0) {
         this.gwOpsEnabled = false;
         return;
       }
 
       console.debug(
         "checking state of boxes: ",
-        JSON.stringify(this.selectedGwAddr)
+        JSON.stringify(this.selectedGwAddrs)
       );
-      this.gwOpsEnabled = this.selectedGwAddr.some((addr) => {
+      this.gwOpsEnabled = this.selectedGwAddrs.some((addr) => {
         if (!this.$refs.box) {
           console.debug("$refs.box not ready");
           return false;
@@ -287,7 +308,7 @@ export default {
 
     /** 向已建立ws连接并已连接设备的网关发送 rpc 请求 */
     sendRpcMulti(method, params) {
-      this.selectedGwAddr.forEach((addr) => {
+      this.selectedGwAddrs.forEach((addr) => {
         const box = this.$refs.box.find((b) => b.gwAddress === addr);
         if (!box || !box.isDeviceConnected || !box.sendRpc) return;
 
@@ -359,7 +380,8 @@ export default {
 }
 .setting-container {
   display: flex;
-  justify-content: flex-end;
+  flex-flow: column;
+  justify-content: space-around;
 }
 
 /* 设备列表项前的复选框减小间距 */

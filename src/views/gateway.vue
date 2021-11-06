@@ -51,7 +51,6 @@ export default {
       this.newAddress = "";
       localStorage.setItem("addressList", JSON.stringify(this.addressList));
       
-      console.log(this.addedAddrs);
     },
     removeAddress(gwAddress) {
       for (const item of this.addressList) {
@@ -67,7 +66,8 @@ export default {
     method3() {},
   },
   mounted(){
-    this.addressList = JSON.parse(localStorage.getItem("addressList"));
+    if(this.addressList){
+    this.addressList = JSON.parse(localStorage.getItem("addressList"));}
   }
 };
 </script>

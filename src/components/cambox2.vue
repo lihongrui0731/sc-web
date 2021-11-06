@@ -158,9 +158,7 @@ export default {
 
     hasSessionData() {
       return (
-        this.sessionProgress.endTimestamp -
-          this.sessionProgress.beginTimestamp >
-        100
+        this.sessionProgress.endTimestamp - this.sessionProgress.beginTimestamp > 100
       );
     },
   },

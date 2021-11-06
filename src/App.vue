@@ -179,7 +179,7 @@ import WsClient from "./components/WsClient.js";
 import gwAddress from "./components/address.vue";
 // import addressList from "./components/address.vue"
 
-var imageModes = ["auto", "fixed", "avg"];
+// var imageModes = ["auto", "fixed", "avg"];
 
 export default {
   components: {
@@ -255,133 +255,133 @@ export default {
       running: null,
     };
   },
-  computed: {
-    /** 背景为暗色时文字改为亮灰色 */
-    appBarTextStyle() {
-      if (this.uiOptions.appBarTheme === "dark") {
-        return { color: "#d0d0d0" };
-      }
-    },
-    freqRangeLabel() {
-      return (
-        this.captureSettings.freqRange[0].toString() +
-        "Hz ~ " +
-        this.captureSettings.freqRange[1].toString() +
-        "Hz"
-      );
-    },
-    distanceLabel() {
-      return (this.captureSettings.distance / 10).toFixed(0) + "cm";
-    },
+  // computed: {
+  //   /** 背景为暗色时文字改为亮灰色 */
+  //   appBarTextStyle() {
+  //     if (this.uiOptions.appBarTheme === "dark") {
+  //       return { color: "#d0d0d0" };
+  //     }
+  //   },
+  //   freqRangeLabel() {
+  //     return (
+  //       this.captureSettings.freqRange[0].toString() +
+  //       "Hz ~ " +
+  //       this.captureSettings.freqRange[1].toString() +
+  //       "Hz"
+  //     );
+  //   },
+  //   distanceLabel() {
+  //     return (this.captureSettings.distance / 10).toFixed(0) + "cm";
+  //   },
 
-    dynamicRangeText() {
-      return this.imageSettings.dynamicRange.toFixed(1) + "dB";
-    },
-    fixedThresholdText() {
-      return this.imageSettings.fixedThreshold.toFixed(1) + "dB";
-    },
-    thresholdMarginText() {
-      return this.imageSettings.thresholdMargin.toFixed(1) + "dB";
-    },
-    imageModeValue() {
-      return imageModes[this.imageSettings.modeIndex];
-    },
-  },
-  methods: {
-    /** 更新是否允许对网关发送操作命令的状态 */
-    updateOpEnabled() {
-      if (!this.gwAddress || this.selectedGwAddr.length === 0) {
-        this.gwOpsEnabled = false;
-        return;
-      }
+  //   dynamicRangeText() {
+  //     return this.imageSettings.dynamicRange.toFixed(1) + "dB";
+  //   },
+  //   fixedThresholdText() {
+  //     return this.imageSettings.fixedThreshold.toFixed(1) + "dB";
+  //   },
+  //   thresholdMarginText() {
+  //     return this.imageSettings.thresholdMargin.toFixed(1) + "dB";
+  //   },
+  //   imageModeValue() {
+  //     return imageModes[this.imageSettings.modeIndex];
+  //   },
+  // },
+  // methods: {
+  //   /** 更新是否允许对网关发送操作命令的状态 */
+  //   updateOpEnabled() {
+  //     if (!this.gwAddress || this.selectedGwAddr.length === 0) {
+  //       this.gwOpsEnabled = false;
+  //       return;
+  //     }
 
-      console.debug(
-        "checking state of boxes: ",
-        JSON.stringify(this.selectedGwAddr)
-      );
-      this.gwOpsEnabled = this.selectedGwAddr.some((addr) => {
-        if (!this.$refs.box) {
-          console.debug("$refs.box not ready");
-          return false;
-        }
-        const box = this.$refs.box.find((b) => b.$vnode.key === addr);
+  //     console.debug(
+  //       "checking state of boxes: ",
+  //       JSON.stringify(this.selectedGwAddr)
+  //     );
+  //     this.gwOpsEnabled = this.selectedGwAddr.some((addr) => {
+  //       if (!this.$refs.box) {
+  //         console.debug("$refs.box not ready");
+  //         return false;
+  //       }
+  //       const box = this.$refs.box.find((b) => b.$vnode.key === addr);
 
-        console.debug(
-          `box(${box.$vnode.key}): ${box.isWsConnected} ${box.isDeviceConnected}`
-        );
-        return box.isWsConnected && box.isDeviceConnected;
-      });
-    },
+  //       console.debug(
+  //         `box(${box.$vnode.key}): ${box.isWsConnected} ${box.isDeviceConnected}`
+  //       );
+  //       return box.isWsConnected && box.isDeviceConnected;
+  //     });
+  //   },
 
-    onBoxStateChanged(gwAddress) {
-      //console.debug('box state changed', gwAddress);
-      this.updateOpEnabled();
-      // 与网关建立连接后，发送初始设置
-      this.dynamicRangeChanged();
-    },
+  //   onBoxStateChanged(gwAddress) {
+  //     //console.debug('box state changed', gwAddress);
+  //     this.updateOpEnabled();
+  //     // 与网关建立连接后，发送初始设置
+  //     this.dynamicRangeChanged();
+  //   },
 
-    /** 向已建立ws连接并已连接设备的网关发送 rpc 请求 */
-    sendRpcMulti(method, params) {
-      this.selectedGwAddr.forEach((addr) => {
-        const box = this.$refs.box.find((b) => b.gwAddress === addr);
-        if (!box || !box.isDeviceConnected || !box.sendRpc) return;
+  //   /** 向已建立ws连接并已连接设备的网关发送 rpc 请求 */
+  //   sendRpcMulti(method, params) {
+  //     this.selectedGwAddr.forEach((addr) => {
+  //       const box = this.$refs.box.find((b) => b.gwAddress === addr);
+  //       if (!box || !box.isDeviceConnected || !box.sendRpc) return;
 
-        console.debug(
-          `sending to ${addr}: ${method} ${JSON.stringify(params)}`
-        );
-        box.sendRpc(method, params);
-      });
-    },
+  //       console.debug(
+  //         `sending to ${addr}: ${method} ${JSON.stringify(params)}`
+  //       );
+  //       box.sendRpc(method, params);
+  //     });
+  //   },
 
-    saveOptions() {
-      const params = { ...this.captureOptions };
-      this.sendRpcMulti(methodName_SetParam, params);
-    },
+  //   saveOptions() {
+  //     const params = { ...this.captureOptions };
+  //     this.sendRpcMulti(methodName_SetParam, params);
+  //   },
 
-    /** 设置采集参数 */
-    setCaptureParamsMulti() {
-      const body = { ...this.captureSettings };
-      this.sendRpcMulti(methodName_SetParam, body);
-    },
+  //   /** 设置采集参数 */
+  //   setCaptureParamsMulti() {
+  //     const body = { ...this.captureSettings };
+  //     this.sendRpcMulti(methodName_SetParam, body);
+  //   },
 
-    imageModeChanged() {
-      this.imageSettings.imageMode = imageModes[this.imageSettings.modeIndex];
-      console.debug("imageMode", this.imageSettings.imageMode);
-      const body = { imageMode: this.imageSettings.imageMode };
-      this.sendRpcMulti(methodName_SetParam, body);
-    },
-    dynamicRangeChanged() {
-      console.debug("dynamicRange", this.imageSettings.dynamicRange);
-      const body = { dynamicRange: this.imageSettings.dynamicRange };
-      this.sendRpcMulti(methodName_SetParam, body);
-    },
-    fixedThresholdChanged() {
-      console.debug("fixedThreshold", this.imageSettings.fixedThreshold);
-      const body = { fixedThreshold: this.imageSettings.fixedThreshold };
-      this.sendRpcMulti(methodName_SetParam, body);
-    },
-    thresholdMarginChanged() {
-      console.debug("thresholdMargin", this.imageSettings.thresholdMargin);
-      const body = { thresholdMargin: this.imageSettings.thresholdMargin };
-      this.sendRpcMulti(methodName_SetParam, body);
-    },
+  //   imageModeChanged() {
+  //     this.imageSettings.imageMode = imageModes[this.imageSettings.modeIndex];
+  //     console.debug("imageMode", this.imageSettings.imageMode);
+  //     const body = { imageMode: this.imageSettings.imageMode };
+  //     this.sendRpcMulti(methodName_SetParam, body);
+  //   },
+  //   dynamicRangeChanged() {
+  //     console.debug("dynamicRange", this.imageSettings.dynamicRange);
+  //     const body = { dynamicRange: this.imageSettings.dynamicRange };
+  //     this.sendRpcMulti(methodName_SetParam, body);
+  //   },
+  //   fixedThresholdChanged() {
+  //     console.debug("fixedThreshold", this.imageSettings.fixedThreshold);
+  //     const body = { fixedThreshold: this.imageSettings.fixedThreshold };
+  //     this.sendRpcMulti(methodName_SetParam, body);
+  //   },
+  //   thresholdMarginChanged() {
+  //     console.debug("thresholdMargin", this.imageSettings.thresholdMargin);
+  //     const body = { thresholdMargin: this.imageSettings.thresholdMargin };
+  //     this.sendRpcMulti(methodName_SetParam, body);
+  //   },
 
-    toolbarBtn(name) {
-      if (name === "record") {
-        // 目前不能在后台完成上一命令前发出别的命令，待后台实现请求排队
-        this.sendRpcMulti(name);
-        this.running = "recording";
-        // this.resetProgress();
-        // imgLoader.clear();
-      } else if (name === "stop") {
-        this.sendRpcMulti(name);
-        this.running = null;
-      }
-    },
-  },
-  mounted() {
-   this.gwAddresses = JSON.parse( localStorage.getItem('addressList'))
-  },
+  //   toolbarBtn(name) {
+  //     if (name === "record") {
+  //       // 目前不能在后台完成上一命令前发出别的命令，待后台实现请求排队
+  //       this.sendRpcMulti(name);
+  //       this.running = "recording";
+  //       // this.resetProgress();
+  //       // imgLoader.clear();
+  //     } else if (name === "stop") {
+  //       this.sendRpcMulti(name);
+  //       this.running = null;
+  //     }
+  //   },
+  // },
+  // mounted() {
+  //  this.gwAddresses = JSON.parse( localStorage.getItem('addressList'))
+  // },
 };
 </script>
 <style>
