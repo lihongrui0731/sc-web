@@ -8,7 +8,7 @@ const commandsWithNoBody = [
 ]
 const commandsWithBody = ['setParam', 'seek']
 const requests = ['getParam']
-const compatMode = false // 旧版本接口协议，待后端迁移到 JSON-PRC 2.0 后废弃
+const compatMode = true // 旧版本接口协议，待后端迁移到 JSON-PRC 2.0 后废弃
 let lastMsgID = 0
 
 export default {

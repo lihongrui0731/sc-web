@@ -30,6 +30,7 @@
         :items="fileLinks"
         :items-per-page="10"
         class="elevation-1"
+        no-data-text="当 前 无 数 据"
       >
       <template
       v-slot:item.name="{item}"
@@ -58,11 +59,8 @@ selectedGwAddr: null,
         { text: "Size", value: "size" },
       ],
       fileLinks: [
-        { name: "---", time: "00", size: "---" },
+        // { name: "", time: "", size: "" },
       ],
-     /*  slots: [
-        fileLinks.name
-      ] */
     };
   },
 
