@@ -368,7 +368,7 @@ export default {
 </script>
 <style>
 .cambox {
-  width: 410px;
+  /* width: 410px; */
   position: relative;
   display: flex;
   flex-flow: column nowrap;
