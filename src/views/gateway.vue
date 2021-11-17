@@ -66,10 +66,13 @@ export default {
     method3() {},
   },
   mounted(){
-    if(this.addressList){
-    this.addressList = JSON.parse(localStorage.getItem("addressList"));}
-  }
-};
+  
+    this.addresses = JSON.parse(localStorage.getItem("addressList"));
+      if(this.addresses){
+        this.addressList = this.addresses;
+      }
+    }
+  };
 </script>
 <style>
 input {

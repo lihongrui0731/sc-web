@@ -1,3 +1,4 @@
+import Hls from 'hls.js'
 export default class HlsPlayer {
   constructor(videoElem) {
     this.videoElem = videoElem
@@ -32,7 +33,7 @@ export default class HlsPlayer {
     if (this.hls) {
       this.hls.destroy()
     }
-    this.hls = new Hls(/* { debug: true } */)
+    this.hls = new Hls({ /* debug: true */ })
     this.hls.on(Hls.Events.ERROR, (event, data) => {
       console.error(data)
     })

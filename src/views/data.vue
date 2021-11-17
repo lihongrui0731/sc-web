@@ -68,6 +68,7 @@ selectedGwAddr: null,
    
     async loadLinks(addr) {
       const results= await fileListService.getDataByDevice(addr);
+      console.log(results);
       this.fileLinks = results;
     },
     onSelectedChange(index) {

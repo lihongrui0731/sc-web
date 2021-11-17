@@ -7,6 +7,9 @@
         </template>
       </v-app-bar-nav-icon>
     </div> -->
+        <v-app-bar-nav-icon
+        @click="drawerRight = !drawerRight"
+      ></v-app-bar-nav-icon>
     <div class="box-container">
       <cam-box
         ref="box"
@@ -18,9 +21,6 @@
       
     </div>
     
-    <v-app-bar-nav-icon
-        @click="drawerRight = !drawerRight"
-      ></v-app-bar-nav-icon>
       
     <v-navigation-drawer v-model="drawerRight" app clipped right width="308">
       
