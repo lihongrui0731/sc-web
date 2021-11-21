@@ -12,16 +12,17 @@
               <v-list-item
                 v-for="addr in selectedGwAddrs"
                 :key="addr"
-                @click="loadLinks(addr)"
+                @click="onSelectedChange(index)"
               >
-                <!-- 网关地址 -->
-                <v-list-item-content>
-                  <input
+                <v-list-item-content class="addrChip">
+                  <!-- <input
+                  class="checkbox"
                     type="checkbox"
                     enabled
                     v-model="isWsConnected"
                     id="ws-state-checkbox"
-                  />
+                  /> -->
+
                   <v-list-item-title>{{ addr }}</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
@@ -36,11 +37,12 @@
         <div class="box-container">
           <cam-box
             ref="box"
-            v-for="addr in selectedGwAddrs"
-            :key="addr"
-            :gw-address="addr"
+            :gw-address="selectedGwAddr"
             @state-changed="onBoxStateChanged"
           />
+          <!-- v-for="addr in selectedGwAddr" -->
+            <!-- :key="addr" -->
+            <!-- v-bind="selectedGwAddr" -->
         </div>
       </div>
     </div>
@@ -220,11 +222,14 @@ import hlsPlayer from "../components/HlsPlayer";
 
 var imageModes = ["auto", "fixed", "avg"];
 const methodName_SetParam = "setParam";
+let selectedGwAddr = [];
 
 // let selectedGwAddrs = localStorage.getItem('gwAddress')
 export default {
   components: { "cam-box": CamBox, "ws-client": WsClient },
   // props: [ 'gwAddress', 'addressList'],
+  // let selectedGwAddr = null,
+
   data() {
     return {
       drawerRight: null,
@@ -249,6 +254,8 @@ export default {
 
       /** 当前选定要连接的网关地址 */
       selectedGwAddrs: [],
+
+      selectedGwAddr: [],
       /** 是否可对网关发出操作，由当前已连接的各网关的状态决定 */
       gwOpsEnabled: false,
 
@@ -318,10 +325,12 @@ export default {
   },
   methods: {
     onSelectedChange(index) {
-      this.selectedGwAddr = this.selectedGwAddrs[index];
-      console.log(index);
+      selectedGwAddr = this.selectedGwAddrs[index];
+      console.log(index, selectedGwAddr);
     },
-
+    // onSelectedGwAddrs() {
+    //   onSelectedGwAddrs
+    // },
     onWsStateChanged(isOpen) {
       this.isWsConnected = isOpen;
 
@@ -477,6 +486,12 @@ export default {
   flex-flow: row wrap;
   /* justify-content: space-evenly; */
   justify-content: space-around;
+}
+.checkbox {
+}
+.addrChip {
+  display: flex;
+  flex-flow: row;
 }
 .box-column {
   display: flex;

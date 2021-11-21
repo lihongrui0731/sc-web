@@ -74,7 +74,7 @@ export default {
     // WsClient, 
   "ws-client": wsClient 
   },
-  props: ["gwAddress"],
+  props: ["gwAddress", "selectedGwAddr"],
   data() {
     return {
       // gwAddress: "192.168.1.151",

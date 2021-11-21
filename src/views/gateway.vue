@@ -11,7 +11,7 @@
       <form>
         <label for="newAddress">添加网关：</label>
         <input id="newAdress" v-model="newAddress" />
-        <v-btn elevation="2" depressed x-small @click="addNewAddress"
+        <v-btn elevation="2" depressed small @click="addNewAddress"
           >加入</v-btn
         >
       </form>
