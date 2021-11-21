@@ -1,171 +1,213 @@
 <template>
   <div>
-    <!--     <div class="setting-container">
-      <v-app-bar-nav-icon @click.stop="drawerRight = !drawerRight">
-        <template>
-          <v-icon :style="appBarTextStyle">mdi-cog</v-icon>
-        </template>
-      </v-app-bar-nav-icon>
-    </div> -->
+    <div class="container">
+      <div class="addrSelect">
+        <v-card max-width="500">
+          <v-list>
+            <v-list-item-group
+              active-class="border"
+              color="indigo"
+              @change="onSelectedChange"
+            >
+              <v-list-item
+                v-for="addr in selectedGwAddrs"
+                :key="addr"
+                @click="loadLinks(addr)"
+              >
+                <!-- 网关地址 -->
+                <v-list-item-content>
+                  <input
+                    type="checkbox"
+                    enabled
+                    v-model="isWsConnected"
+                    id="ws-state-checkbox"
+                  />
+                  <v-list-item-title>{{ addr }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list-item-group>
+          </v-list>
+        </v-card>
+      </div>
+      <div class="box-column">
         <v-app-bar-nav-icon
-        @click="drawerRight = !drawerRight"
-      ></v-app-bar-nav-icon>
-    <div class="box-container">
-      <cam-box
-        ref="box"
-        v-for="addr in selectedGwAddrs"
-        :key="addr"
-        :gw-address="addr"
-        @state-changed="onBoxStateChanged"
-      />
-      
+          @click="drawerRight = !drawerRight"
+        ></v-app-bar-nav-icon>
+        <div class="box-container">
+          <cam-box
+            ref="box"
+            v-for="addr in selectedGwAddrs"
+            :key="addr"
+            :gw-address="addr"
+            @state-changed="onBoxStateChanged"
+          />
+        </div>
+      </div>
     </div>
-    
-      
+
     <v-navigation-drawer v-model="drawerRight" app clipped right width="308">
-      
       <aside class="panel panel-opt__wrap">
         <div class="setting-container">
-         <v-card class="pa-3 panel panel-opt" width="292">
+          <v-card class="pa-3 panel panel-opt" width="292">
             <v-card-title>
               <v-icon>mdi-eye-settings-outline</v-icon>采集选项
             </v-card-title>
-            <v-radio-group v-model="captureOptions.cameraMode" label="相机分辨率 & 帧率:" dense hide-details>
-              <v-radio v-for="m in picks.cameraMode" :key="m.value" :label="m.label" :value="m.value"></v-radio>
+            <v-radio-group
+              v-model="captureOptions.cameraMode"
+              label="相机分辨率 & 帧率:"
+              dense
+              hide-details
+            >
+              <v-radio
+                v-for="m in picks.cameraMode"
+                :key="m.value"
+                :label="m.label"
+                :value="m.value"
+              ></v-radio>
             </v-radio-group>
-            <v-radio-group v-model="captureOptions.acousticFrameRate" label="声学成像帧率:" dense hide-details>
-              <v-radio v-for="m in picks.acousticFrameRate" :key="m.value" :label="m.label" :value="m.value"></v-radio>
+            <v-radio-group
+              v-model="captureOptions.acousticFrameRate"
+              label="声学成像帧率:"
+              dense
+              hide-details
+            >
+              <v-radio
+                v-for="m in picks.acousticFrameRate"
+                :key="m.value"
+                :label="m.label"
+                :value="m.value"
+              ></v-radio>
             </v-radio-group>
             <v-card-actions>
               <v-btn small @click="saveOptions">保存</v-btn>
             </v-card-actions>
           </v-card>
-        <v-card class="pa-3 mb-3" width="292">
-          <v-card-title> <v-icon>mdi-tune</v-icon>采集参数 </v-card-title>
+          <v-card class="pa-3 mb-3" width="292">
+            <v-card-title> <v-icon>mdi-tune</v-icon>采集参数 </v-card-title>
 
-          <p>
-            <label>频率范围:</label>&nbsp;<span>{{ freqRangeLabel }}</span>
-          </p>
-          <v-range-slider
-            :min="0"
-            :max="24400"
-            step="100"
-            v-model="captureSettings.freqRange"
-          >
-          </v-range-slider>
-
-          <p>
-            <label>距离:</label>&nbsp;<span>{{ distanceLabel }}</span>
-          </p>
-          <v-slider
-            dense
-            :min="100"
-            :max="3500"
-            step="100"
-            v-model="captureSettings.distance"
-          >
-          </v-slider>
-
-          <v-card-actions>
-            <v-btn
-              small
-              :disabled="!gwOpsEnabled"
-              @click="setCaptureParamsMulti"
-              >设置采集参数</v-btn
-            >
-          </v-card-actions>
-        </v-card>
-
-        <v-card class="pa-3 mb-3" width="292">
-          <v-card-title>
-            <v-icon>mdi-play-network-outline</v-icon>设备控制
-          </v-card-title>
-          <v-card-actions>
-            <v-btn
-              small
-              @click="toolbarBtn('record')"
-              title="启动采集"
-              :disabled="!gwOpsEnabled"
-            >
-              <v-icon color="#F44336">mdi-record</v-icon>
-            </v-btn>
-            <v-btn
-              small
-              @click="toolbarBtn('stop')"
-              title="停止采集"
-              :disabled="!gwOpsEnabled"
-            >
-              <v-icon>mdi-stop</v-icon>
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-
-        <v-card class="pa-3" width="292">
-          <v-card-title>
-            <v-icon>mdi-image-auto-adjust</v-icon>成像参数
-          </v-card-title>
-          <v-tabs
-            v-model="imageSettings.modeIndex"
-            @change="imageModeChanged"
-            hide-slider
-          >
-            <v-tab>自动模式</v-tab>
-            <v-tab>阈值模式</v-tab>
-            <v-tab>去噪模式</v-tab>
-          </v-tabs>
-
-          <p class="mt-2">
-            <label>动态范围:</label>&nbsp;<span>{{ dynamicRangeText }}</span>
-          </p>
-          <v-slider
-            :min="0.1"
-            :max="12.0"
-            step=".1"
-            v-model="imageSettings.dynamicRange"
-            :disabled="!gwOpsEnabled"
-            @click="dynamicRangeChanged"
-            @end="dynamicRangeChanged"
-          />
-
-          <div v-if="imageModeValue === 'fixed'">
             <p>
-              <label>最大值:</label>&nbsp;<span>{{ fixedThresholdText }}</span>
+              <label>频率范围:</label>&nbsp;<span>{{ freqRangeLabel }}</span>
+            </p>
+            <v-range-slider
+              :min="0"
+              :max="24400"
+              step="100"
+              v-model="captureSettings.freqRange"
+            >
+            </v-range-slider>
+
+            <p>
+              <label>距离:</label>&nbsp;<span>{{ distanceLabel }}</span>
             </p>
             <v-slider
               dense
+              :min="100"
+              :max="3500"
+              step="100"
+              v-model="captureSettings.distance"
+            >
+            </v-slider>
+
+            <v-card-actions>
+              <v-btn
+                small
+                :disabled="!gwOpsEnabled"
+                @click="setCaptureParamsMulti"
+                >设置采集参数</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+
+          <v-card class="pa-3 mb-3" width="292">
+            <v-card-title>
+              <v-icon>mdi-play-network-outline</v-icon>设备控制
+            </v-card-title>
+            <v-card-actions>
+              <v-btn
+                small
+                @click="toolbarBtn('record')"
+                title="启动采集"
+                :disabled="!gwOpsEnabled"
+              >
+                <v-icon color="#F44336">mdi-record</v-icon>
+              </v-btn>
+              <v-btn
+                small
+                @click="toolbarBtn('stop')"
+                title="停止采集"
+                :disabled="!gwOpsEnabled"
+              >
+                <v-icon>mdi-stop</v-icon>
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+
+          <v-card class="pa-3" width="292">
+            <v-card-title>
+              <v-icon>mdi-image-auto-adjust</v-icon>成像参数
+            </v-card-title>
+            <v-tabs
+              v-model="imageSettings.modeIndex"
+              @change="imageModeChanged"
+              hide-slider
+            >
+              <v-tab>自动模式</v-tab>
+              <v-tab>阈值模式</v-tab>
+              <v-tab>去噪模式</v-tab>
+            </v-tabs>
+
+            <p class="mt-2">
+              <label>动态范围:</label>&nbsp;<span>{{ dynamicRangeText }}</span>
+            </p>
+            <v-slider
               :min="0.1"
-              :max="120.0"
+              :max="12.0"
               step=".1"
-              v-model="imageSettings.fixedThreshold"
+              v-model="imageSettings.dynamicRange"
               :disabled="!gwOpsEnabled"
-              @click="fixedThresholdChanged"
-              @end="fixedThresholdChanged"
+              @click="dynamicRangeChanged"
+              @end="dynamicRangeChanged"
             />
-          </div>
 
-          <div v-if="imageModeValue === 'avg'">
-            <p>
-              <label>峰值因子:</label>&nbsp;<span>{{
-                thresholdMarginText
-              }}</span>
-            </p>
-            <v-slider
-              dense
-              :min="5.0"
-              :max="15.0"
-              step=".1"
-              v-model="imageSettings.thresholdMargin"
-              :disabled="!gwOpsEnabled"
-              @click="thresholdMarginChanged"
-              @end="thresholdMarginChanged"
-            />
-          </div>
-        </v-card>
+            <div v-if="imageModeValue === 'fixed'">
+              <p>
+                <label>最大值:</label>&nbsp;<span>{{
+                  fixedThresholdText
+                }}</span>
+              </p>
+              <v-slider
+                dense
+                :min="0.1"
+                :max="120.0"
+                step=".1"
+                v-model="imageSettings.fixedThreshold"
+                :disabled="!gwOpsEnabled"
+                @click="fixedThresholdChanged"
+                @end="fixedThresholdChanged"
+              />
+            </div>
+
+            <div v-if="imageModeValue === 'avg'">
+              <p>
+                <label>峰值因子:</label>&nbsp;<span>{{
+                  thresholdMarginText
+                }}</span>
+              </p>
+              <v-slider
+                dense
+                :min="5.0"
+                :max="15.0"
+                step=".1"
+                v-model="imageSettings.thresholdMargin"
+                :disabled="!gwOpsEnabled"
+                @click="thresholdMarginChanged"
+                @end="thresholdMarginChanged"
+              />
+            </div>
+          </v-card>
         </div>
       </aside>
-      
     </v-navigation-drawer>
-    
   </div>
 </template>
 
@@ -174,15 +216,14 @@ import CamBox from "../components/cambox2.vue";
 import * as appConfigModule from "../components/appConfig.js";
 import addressList from "../components/address.vue";
 import WsClient from "../components/WsClient.js";
-import hlsPlayer from "../components/HlsPlayer"
+import hlsPlayer from "../components/HlsPlayer";
 
 var imageModes = ["auto", "fixed", "avg"];
-const methodName_SetParam = 'setParam';
+const methodName_SetParam = "setParam";
 
 // let selectedGwAddrs = localStorage.getItem('gwAddress')
 export default {
-  components: { "cam-box": CamBox,
-  'ws-client': WsClient, },
+  components: { "cam-box": CamBox, "ws-client": WsClient },
   // props: [ 'gwAddress', 'addressList'],
   data() {
     return {
@@ -190,7 +231,9 @@ export default {
       /** 控制左侧面板的显示 */
       //   drawerLeft: true,
       /** 控制右侧面板的显示 */
-      drawerRight: true,
+      drawerRight: false,
+
+      isWsConnected: false,
 
       appInfo: appConfigModule.appInfo,
       uiOptions: appConfigModule.uiOptions,
@@ -273,7 +316,47 @@ export default {
       return imageModes[this.imageSettings.modeIndex];
     },
   },
-    methods: {
+  methods: {
+    onSelectedChange(index) {
+      this.selectedGwAddr = this.selectedGwAddrs[index];
+      console.log(index);
+    },
+
+    onWsStateChanged(isOpen) {
+      this.isWsConnected = isOpen;
+
+      if (isOpen) {
+        // 连接已建立，停止定时检查重连
+        this.stopConnectionChecking(true);
+
+        this.lastConnected = Date.now();
+        this.updateDurationInterval = window.setInterval(() => {
+          this.durationSeconds = Math.floor(
+            (Date.now() - this.lastConnected) / 1000
+          );
+        }, 1000);
+        console.debug(`connected to ${this.wsUri} (${this.lastConnected})`);
+      } else {
+        // 连接已断开
+        this.cameraStatus = "";
+        console.debug(`disconnected ${this.wsUri}`);
+        //
+        this.isDeviceConnected = false;
+
+        // 清理状态
+        window.clearInterval(this.updateDurationInterval);
+        this.lastConnected = null;
+        this.durationSeconds = null;
+        this.deviceInfo = null;
+
+        if (this.checkedTimes < maxRetryTimes) {
+          // 启动定时重连
+          this.scheduleConnectionChecking();
+        }
+      }
+
+      this.$emit("state-changed", this.gwAddress);
+    },
     /** 更新是否允许对网关发送操作命令的状态 */
     updateOpEnabled() {
       if (!this.selectedGwAddrs || this.selectedGwAddrs.length === 0) {
@@ -367,7 +450,24 @@ export default {
   },
   mounted() {
     this.selectedGwAddrs = JSON.parse(localStorage.getItem("addressList"));
+
+    // if (this.gwAddress) {
+    //   this.checkWsConnection(true);
+    // }
   },
+
+  //     beforeDestroy() {
+  //   this.stopConnectionChecking(true);
+  //   console.debug(`beforeDestroy, closing ws ${this.gwAddress}`);
+  //   this.isDeviceConnected = false;
+  //   if (this.isWsConnected) {
+  //     this.$refs.wsClient.disconnect();
+  //     this.isWsConnected = false;
+  //   }
+  // },
+  // destroyed() {
+  //   this.$emit("state-changed", this.gwAddress);
+  // }
 };
 </script>
 
@@ -377,6 +477,11 @@ export default {
   flex-flow: row wrap;
   /* justify-content: space-evenly; */
   justify-content: space-around;
+}
+.box-column {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
 }
 .setting-container {
   display: flex;
