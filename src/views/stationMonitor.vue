@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="container">
-      <div class="addrSelect">
-        <v-card max-width="500">
+ <!--     <div class="addrSelect">
+       <v-card max-width="500">
           <v-list>
             <v-list-item-group
               active-class="border"
@@ -12,9 +12,7 @@
               <v-list-item
                 v-for="addr in selectedGwAddrs"
                 :key="addr"
-                @click="loadLinks(addr)"
               >
-                <!-- 网关地址 -->
                 <v-list-item-content>
                   <input
                     type="checkbox"
@@ -28,7 +26,7 @@
             </v-list-item-group>
           </v-list>
         </v-card>
-      </div>
+      </div> -->
       <div class="box-column">
         <v-app-bar-nav-icon
           @click="drawerRight = !drawerRight"

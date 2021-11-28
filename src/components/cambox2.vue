@@ -28,7 +28,33 @@
         >:&nbsp;{{ durationSeconds }}秒</span
       >
     </div>
-    <canvas
+    <!-- charts -->
+    <div></div>
+
+    <v-list>
+      <v-list-item>
+          <v-list-group :value="true" no-action sub-group>
+              <v-list-item-content>
+                <canvas
+                  ref="camCanvas"
+                  :width="pictureSize.width"
+                  :height="pictureSize.height"
+                  class="cam-canvas"
+                  :style="canvasStyle"
+                />
+                <video
+                  ref="camVideo"
+                  :width="pictureSize.width"
+                  :height="pictureSize.height"
+                  class="cam-video"
+                  :style="videoStyle"
+                />
+              </v-list-item-content>
+          </v-list-group>
+      </v-list-item>
+    </v-list>
+
+    <!-- <canvas
       ref="camCanvas"
       :width="pictureSize.width"
       :height="pictureSize.height"
@@ -41,7 +67,8 @@
       :height="pictureSize.height"
       class="cam-video"
       :style="videoStyle"
-    />
+    /> -->
+
     <div class="info-row bottom">
       <span class="info-cell">{{ deviceInfoText }}</span>
       <span class="info-cell" v-if="cameraStatus === 'recording'">
@@ -53,14 +80,14 @@
         <v-chip label x-small>待命</v-chip>
       </span>
     </div>
-    <!-- charts -->
-    <div></div>
   </div>
 </template>
 <script>
 import ImgLoader from "../components/imgLoader";
 import wsClient from "../components/WsClient.js";
 import HlsPlayer from "../components/HlsPlayer.js";
+
+import * as echarts from 'echarts';
 
 const wsPort = 6380;
 const wsInitConnDelay = 30; // 首次连接的延迟
@@ -70,9 +97,9 @@ const maxRetryTimes = 5; // 重试连接次数上限
 let hlsPlayer;
 let imageLoader;
 export default {
-  components: { 
-    // WsClient, 
-  "ws-client": wsClient 
+  components: {
+    // WsClient,
+    "ws-client": wsClient,
   },
   props: ["gwAddress"],
   data() {
@@ -158,7 +185,9 @@ export default {
 
     hasSessionData() {
       return (
-        this.sessionProgress.endTimestamp - this.sessionProgress.beginTimestamp > 100
+        this.sessionProgress.endTimestamp -
+          this.sessionProgress.beginTimestamp >
+        100
       );
     },
   },
