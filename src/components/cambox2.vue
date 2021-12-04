@@ -29,45 +29,31 @@
       >
     </div>
     <!-- charts -->
-    <div></div>
+    <div id="chart1">
+    <div class="chart" ref="chart1Ref"></div></div>
 
     <v-list>
       <v-list-item>
-          <v-list-group :value="true" no-action sub-group>
-              <v-list-item-content>
-                <canvas
-                  ref="camCanvas"
-                  :width="pictureSize.width"
-                  :height="pictureSize.height"
-                  class="cam-canvas"
-                  :style="canvasStyle"
-                />
-                <video
-                  ref="camVideo"
-                  :width="pictureSize.width"
-                  :height="pictureSize.height"
-                  class="cam-video"
-                  :style="videoStyle"
-                />
-              </v-list-item-content>
-          </v-list-group>
+        <v-list-group :value="true" no-action sub-group>
+          <v-list-item-content>
+            <canvas
+              ref="camCanvas"
+              :width="pictureSize.width"
+              :height="pictureSize.height"
+              class="cam-canvas"
+              :style="canvasStyle"
+            />
+            <video
+              ref="camVideo"
+              :width="pictureSize.width"
+              :height="pictureSize.height"
+              class="cam-video"
+              :style="videoStyle"
+            />
+          </v-list-item-content>
+        </v-list-group>
       </v-list-item>
     </v-list>
-
-    <!-- <canvas
-      ref="camCanvas"
-      :width="pictureSize.width"
-      :height="pictureSize.height"
-      class="cam-canvas"
-      :style="canvasStyle"
-    />
-    <video
-      ref="camVideo"
-      :width="pictureSize.width"
-      :height="pictureSize.height"
-      class="cam-video"
-      :style="videoStyle"
-    /> -->
 
     <div class="info-row bottom">
       <span class="info-cell">{{ deviceInfoText }}</span>
@@ -86,8 +72,11 @@
 import ImgLoader from "../components/imgLoader";
 import wsClient from "../components/WsClient.js";
 import HlsPlayer from "../components/HlsPlayer.js";
+// import {ref} from "vue";
 
-import * as echarts from 'echarts';
+// import Chart from "../components/chart.vue"
+
+import * as echarts from "echarts";
 
 const wsPort = 6380;
 const wsInitConnDelay = 30; // 首次连接的延迟
@@ -96,10 +85,77 @@ const maxRetryTimes = 5; // 重试连接次数上限
 
 let hlsPlayer;
 let imageLoader;
+
+var base = +new Date(2014, 9, 3);
+var oneDay = 24 * 3600 * 1000;
+var xAxisData = [];
+var data = [ Math.random() * 10 ];
+var now = new Date(base);
+
+const optionLeq = {
+  xAxis: {
+    type: "time",
+    boundaryGap: false,
+    data: xAxisData,
+    axisLabel: {
+      formatter: "{HH}:{mm}:{ss}:{SSS}",
+    },
+  },
+  yAxis: {
+    boundaryGap: [0, "50%"],
+    type: "value",
+  },
+  series: [
+    {
+      type: "line",
+      smooth: true,
+      symbol: "none",
+      // stack: 'a',
+      // areaStyle: {
+      //   normal: {}
+      // },
+      data: data,
+    },
+  ],
+};
+
+function addData(shift) {
+  now = [now.getFullYear(), now.getMonth() + 1, now.getDate()].join("/");
+  xAxisData.push(now);
+  data.push(Math.random() * 10 + data[data.length - 1]);
+  if (shift) {
+    xAxisData.shift();
+    data.shift();
+  }
+  now = new Date(+new Date(now) + oneDay);
+}
+for (var i = 1; i < 100; i++) {
+  addData();
+};
+console.log(optionLeq)
+
+// setInterval(function () {
+//   addData(true);
+//   chart1.setOption({
+//     xAxis: {
+//       data: xAxisData,
+//     },
+//     series: [
+//       {
+//         data: data,
+//       },
+//     ],
+//   });
+// }, 500);
+
+
+
+
 export default {
   components: {
     // WsClient,
     "ws-client": wsClient,
+    // "chart" : Chart,
   },
   props: ["gwAddress"],
   data() {
@@ -127,8 +183,10 @@ export default {
         position: 0,
       },
       cameraStatus: "",
+      chart1: null,
     };
   },
+
   mounted() {
     // 启动连接维持定时器
     if (this.gwAddress) {
@@ -140,6 +198,12 @@ export default {
 
     // show placeholder image
     imageLoader.loadAndDrawImage(this.$refs.sampleImg.src);
+
+    const el1 = this.$refs.chart1Ref;
+    echarts.dispose(el1);
+   this.chart1 = echarts.init(el1);
+   
+this.chart1.setOption(optionLeq);
   },
   beforeDestroy() {
     this.stopConnectionChecking(true);
@@ -430,5 +494,8 @@ export default {
 } */
 .cambox .info-row.bottom .info-cell {
   margin-bottom: 8px;
+}
+.chart {
+  height: 50px;
 }
 </style>
