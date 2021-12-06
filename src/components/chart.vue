@@ -32,6 +32,9 @@ var option;
         yAxis: {
           boundaryGap: [0, "50%"],
           type: "value",
+          axisLabel: {
+            show: false
+          }
         },
         series: [
           {

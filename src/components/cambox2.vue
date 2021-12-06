@@ -93,17 +93,33 @@ var data = [ Math.random() * 10 ];
 var now = new Date(base);
 
 const optionLeq = {
+  grid: {
+    left: "5%",
+    right: "5%",
+    bottom: "5%",
+    top: "5%",
+  },
   xAxis: {
     type: "time",
     boundaryGap: false,
     data: xAxisData,
     axisLabel: {
       formatter: "{HH}:{mm}:{ss}:{SSS}",
+      show: false,
+    },
+    splitLine: {
+      show: true,
     },
   },
   yAxis: {
     boundaryGap: [0, "50%"],
     type: "value",
+    axisLabel: {
+      show: false,
+    },
+    axisLine: {
+      show: true,
+    },
   },
   series: [
     {
@@ -496,6 +512,6 @@ this.chart1.setOption(optionLeq);
   margin-bottom: 8px;
 }
 .chart {
-  height: 50px;
+  height: 100px;
 }
 </style>
