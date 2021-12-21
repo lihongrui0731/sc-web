@@ -85,7 +85,7 @@ export default {
 .addNewLabel {
   color: #535355;
   font-size: 16px;
-  font-family: Arial;
+  /* font-family: Arial; */
   font-style: normal;
   font-variant: normal;
   font-weight: 700;
@@ -103,7 +103,7 @@ input {
 }
 .addNewBtn {
     font-size: 12px;
-  font-family: Arial;
+  /* font-family: Arial; */
   font-style: normal;
   font-variant: normal;
   font-weight: 700;
@@ -113,7 +113,7 @@ input {
   margin-bottom: 5px;
   color: #535355;
   font-size: 14px;
-  font-family: Arial;
+  /* font-family: Arial; */
   font-style: normal;
   font-variant: normal;
   font-weight: 400;

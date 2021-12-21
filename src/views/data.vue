@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="data-container mt-2">
     <div class="addrSelect">
       <v-card max-width="500">
         <v-list dense>
@@ -81,7 +81,7 @@ export default {
 };
 </script>
 <style>
-.container {
+.data-container {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -98,10 +98,13 @@ export default {
   color: #535355;
   width: 150px;
   font-size: 14px;
-  font-family: Arial;
+  /* font-family: Arial; */
   font-style: normal;
   font-variant: normal;
   font-weight: 400;
   line-height: 20px;
+}
+.v-data-table {
+  width: 574px;
 }
 </style>

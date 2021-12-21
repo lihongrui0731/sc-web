@@ -30,11 +30,20 @@
     </div>
     <!-- charts -->
     <div id="chart1">
-    <div class="chart" ref="chart1Ref"></div></div>
+      <!-- <div class="chart" ref="chart1Ref"></div> -->
+      <v-chart class="chart" :option="optionLeq"></v-chart>
+    </div>
 
-    <v-list>
+    <v-list class="videoStream">
       <v-list-item>
         <v-list-group :value="true" no-action sub-group>
+          <template v-slot:activator>
+            <v-list-item-content>
+              <v-list-item-title class="videoSwitch"
+                >展开或收起视频</v-list-item-title
+              >
+            </v-list-item-content>
+          </template>
           <v-list-item-content>
             <canvas
               ref="camCanvas"
@@ -74,9 +83,8 @@ import wsClient from "../components/WsClient.js";
 import HlsPlayer from "../components/HlsPlayer.js";
 // import {ref} from "vue";
 
-// import Chart from "../components/chart.vue"
-
 import * as echarts from "echarts";
+import VChart from "vue-echarts";
 
 const wsPort = 6380;
 const wsInitConnDelay = 30; // 首次连接的延迟
@@ -86,92 +94,33 @@ const maxRetryTimes = 5; // 重试连接次数上限
 let hlsPlayer;
 let imageLoader;
 
-var base = +new Date(2014, 9, 3);
-var oneDay = 24 * 3600 * 1000;
-var xAxisData = [];
-var data = [ Math.random() * 10 ];
-var now = new Date(base);
+// var chartDom = document.getElementById('chart');
+// var chart = echarts.init(chartDom);
 
-const optionLeq = {
-  grid: {
-    left: "5%",
-    right: "5%",
-    bottom: "5%",
-    top: "5%",
-  },
-  xAxis: {
-    type: "time",
-    boundaryGap: false,
-    data: xAxisData,
-    axisLabel: {
-      formatter: "{HH}:{mm}:{ss}:{SSS}",
-      show: false,
-    },
-    splitLine: {
-      show: true,
-    },
-  },
-  yAxis: {
-    boundaryGap: [0, "50%"],
-    type: "value",
-    axisLabel: {
-      show: false,
-    },
-    axisLine: {
-      show: true,
-    },
-  },
-  series: [
-    {
-      type: "line",
-      smooth: true,
-      symbol: "none",
-      // stack: 'a',
-      // areaStyle: {
-      //   normal: {}
-      // },
-      data: data,
-    },
-  ],
-};
+var xAxisData = [ 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -17, -18, -19, -20 ];
+var data = [Math.random() * 150];
+
+// + data[data.length - 1]
 
 function addData(shift) {
-  now = [now.getFullYear(), now.getMonth() + 1, now.getDate()].join("/");
-  xAxisData.push(now);
-  data.push(Math.random() * 10 + data[data.length - 1]);
-  if (shift) {
-    xAxisData.shift();
-    data.shift();
+  // now = [now.getFullYear(), now.getMonth() + 1, now.getDate()].join("/");
+  // xAxisData.push(now);
+  data.unshift((Math.random() ) * 100 );
+  if (data.length > xAxisData.length) {
+    // xAxisData.shift();
+    data.pop();
   }
-  now = new Date(+new Date(now) + oneDay);
+  // now = new Date(+new Date(now) + oneDay);
 }
 for (var i = 1; i < 100; i++) {
   addData();
-};
-console.log(optionLeq)
-
-// setInterval(function () {
-//   addData(true);
-//   chart1.setOption({
-//     xAxis: {
-//       data: xAxisData,
-//     },
-//     series: [
-//       {
-//         data: data,
-//       },
-//     ],
-//   });
-// }, 500);
-
-
-
+}
+// console.log(optionLeq);
 
 export default {
   components: {
-    // WsClient,
     "ws-client": wsClient,
-    // "chart" : Chart,
+    "v-chart": VChart,
   },
   props: ["gwAddress"],
   data() {
@@ -199,11 +148,74 @@ export default {
         position: 0,
       },
       cameraStatus: "",
-      chart1: null,
+
+      //chart
+      optionLeq: {
+        grid: {
+          left: "5%",
+          right: "5%",
+          bottom: "20%",
+          top: "10%",
+        },
+        xAxis: {
+          type: "category",
+          boundaryGap: false,
+          inverse: true,
+          data: xAxisData,
+          interval: 1,
+          axisLabel: {
+            show: true,
+          
+          },
+          axisLabel: {
+            // formatter: "{HH}:{mm}:{ss}:{SSS}",
+            show: true,
+          },
+          splitLine: {
+            show: true,
+          },
+        },
+        yAxis: {
+          position: "left",
+          boundaryGap: [0, "50%"],
+          type: "value",
+          max: 300,
+          axisLabel: {
+            show: true,
+          },
+          axisLine: {
+            show: false,
+          },
+        },
+        series: [
+          {
+            type: "line",
+            smooth: true,
+            symbol: "none",
+            // stack: 'a',
+            // areaStyle: {
+            //   normal: {}
+            // },
+            data: data,
+          },
+        ],
+      },
     };
   },
 
   mounted() {
+    // this.draw();
+    this.optionLeq;
+    //异步初始化echarts
+     function initEcharts() {
+       let newPromise = new Promise((resolve) =>{
+         resolve()
+        })
+        newPromise.then(() => {
+          echarts.init(chartDom);
+        }
+        )};
+
     // 启动连接维持定时器
     if (this.gwAddress) {
       this.checkWsConnection(true);
@@ -215,11 +227,10 @@ export default {
     // show placeholder image
     imageLoader.loadAndDrawImage(this.$refs.sampleImg.src);
 
-    const el1 = this.$refs.chart1Ref;
-    echarts.dispose(el1);
-   this.chart1 = echarts.init(el1);
-   
-this.chart1.setOption(optionLeq);
+    // const el1 = this.$refs.chart1Ref;
+    // echarts.dispose(el1);
+    // this.chart1 = echarts.init(el1);
+    // this.chart.setOption(optionLeq);
   },
   beforeDestroy() {
     this.stopConnectionChecking(true);
@@ -252,7 +263,7 @@ this.chart1.setOption(optionLeq);
 
     deviceInfoText() {
       if (!this.isDeviceConnected) {
-        return "未连接设备";
+        return "未连接采集设备";
       } else {
         return (
           "设备SN: " +
@@ -272,6 +283,13 @@ this.chart1.setOption(optionLeq);
     },
   },
   methods: {
+    // draw() {
+      // this.chartObj = echarts.init(document.getElementById("chart"));
+      // this.chartObj.setOption(optionLeq);
+    // },
+    setDym: setInterval(() => {
+      addData(true);
+    }, 500),
     /** 计划一次连接检查 */
     scheduleConnectionChecking(delay) {
       this.checkedTimes++;
@@ -477,22 +495,28 @@ this.chart1.setOption(optionLeq);
 </script>
 <style>
 .cambox {
-  /* width: 410px; */
+  width: 700px;
   position: relative;
   display: flex;
   flex-flow: column nowrap;
+  /* flex-grow: 2; */
 }
 
 .cambox .cam-canvas,
 .cambox .cam-video {
   margin: 0 -1px;
 }
-
+.videoStream .videoSwitch {
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.562);
+}
 .cambox .info-row {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
   font-size: 12px;
+  font-weight: 700;
   padding: 0 12px;
 }
 .cambox .info-row .v-input,

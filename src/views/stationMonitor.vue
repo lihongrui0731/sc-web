@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <div class="container">
- <!--     <div class="addrSelect">
+  <div class="mt-2">
+    <div class="monitor-container">
+      <!--     <div class="addrSelect">
        <v-card max-width="500">
           <v-list>
             <v-list-item-group
@@ -28,9 +28,196 @@
         </v-card>
       </div> -->
       <div class="box-column">
-        <v-app-bar-nav-icon
+        <!-- <v-app-bar-nav-icon
           @click="drawerRight = !drawerRight"
-        ></v-app-bar-nav-icon>
+        ></v-app-bar-nav-icon> -->
+            <div class="setting-btn-row">
+        <v-dialog transition="dialog-bottom-transition" max-width="888">
+          <template  v-slot:activator="{ on, attrs }">
+            <v-btn color="primary" v-bind="attrs" v-on="on"
+              ><v-icon small>mdi-cog-outline</v-icon>控制面板</v-btn>
+            
+          </template>
+          <template v-slot:default="dialog">
+            <v-card class="settings">
+              <v-toolbar color="primary" dark>控制面板</v-toolbar>
+                <div class="setting-container">
+                  <v-card class="pa-3 ml-2 mt-2 panel acq-opt"  >
+                    <v-card-title>
+                      <v-icon>mdi-eye-settings-outline</v-icon>采集选项
+                    </v-card-title>
+                    <v-radio-group
+                      v-model="captureOptions.cameraMode"
+                      label="相机分辨率 & 帧率:"
+                      dense
+                      hide-details
+                    >
+                      <v-radio
+                        v-for="m in picks.cameraMode"
+                        :key="m.value"
+                        :label="m.label"
+                        :value="m.value"
+                      ></v-radio>
+                    </v-radio-group>
+                    <v-radio-group
+                      v-model="captureOptions.acousticFrameRate"
+                      label="声学成像帧率:"
+                      dense
+                      hide-details
+                    >
+                      <v-radio
+                        v-for="m in picks.acousticFrameRate"
+                        :key="m.value"
+                        :label="m.label"
+                        :value="m.value"
+                      ></v-radio>
+                    </v-radio-group>
+                    <v-card-actions>
+                      <v-btn small @click="saveOptions">保存</v-btn>
+                    </v-card-actions>
+                  </v-card>
+
+                  <v-card class="pa-3 mt-2 panel control" >
+                    <v-card-title>
+                      <v-icon>mdi-play-network-outline</v-icon>设备控制
+                    </v-card-title>
+                    <v-card-actions>
+                      <v-btn
+                        small
+                        @click="toolbarBtn('record')"
+                        title="启动采集"
+                        :disabled="!gwOpsEnabled"
+                      >
+                        <v-icon color="#F44336">mdi-record</v-icon>
+                      </v-btn>
+                      <v-btn
+                        small
+                        @click="toolbarBtn('stop')"
+                        title="停止采集"
+                        :disabled="!gwOpsEnabled"
+                      >
+                        <v-icon>mdi-stop</v-icon>
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
+
+                  <v-card class="pa-3 panel img-param" >
+                    <v-card-title>
+                      <v-icon>mdi-image-auto-adjust</v-icon>成像参数
+                    </v-card-title>
+                    <v-tabs
+                      v-model="imageSettings.modeIndex"
+                      @change="imageModeChanged"
+                      hide-slider
+                      fixed-tabs
+                    >
+                      <v-tab>自动模式</v-tab>
+                      <v-tab>阈值模式</v-tab>
+                      <v-tab>去噪模式</v-tab>
+                    </v-tabs>
+
+                    <p class="mt-2">
+                      <label>动态范围:</label>&nbsp;<span>{{
+                        dynamicRangeText
+                      }}</span>
+                    </p>
+                    <v-slider
+                      :min="0.1"
+                      :max="12.0"
+                      step=".1"
+                      v-model="imageSettings.dynamicRange"
+                      :disabled="!gwOpsEnabled"
+                      @click="dynamicRangeChanged"
+                      @end="dynamicRangeChanged"
+                    />
+
+                    <div v-if="imageModeValue === 'fixed'">
+                      <p>
+                        <label>最大值:</label>&nbsp;<span>{{
+                          fixedThresholdText
+                        }}</span>
+                      </p>
+                      <v-slider
+                        dense
+                        :min="0.1"
+                        :max="120.0"
+                        step=".1"
+                        v-model="imageSettings.fixedThreshold"
+                        :disabled="!gwOpsEnabled"
+                        @click="fixedThresholdChanged"
+                        @end="fixedThresholdChanged"
+                      />
+                    </div>
+
+                    <div v-if="imageModeValue === 'avg'">
+                      <p>
+                        <label>峰值因子:</label>&nbsp;<span>{{
+                          thresholdMarginText
+                        }}</span>
+                      </p>
+                      <v-slider
+                        dense
+                        :min="5.0"
+                        :max="15.0"
+                        step=".1"
+                        v-model="imageSettings.thresholdMargin"
+                        :disabled="!gwOpsEnabled"
+                        @click="thresholdMarginChanged"
+                        @end="thresholdMarginChanged"
+                      />
+                    </div>
+                  </v-card>
+                  <v-card class="pa-3 mr-2 mt-2 panel acq-param" >
+                    <v-card-title>
+                      <v-icon>mdi-tune</v-icon>采集参数
+                    </v-card-title>
+
+                    <p style="width:240px ">
+                      <label>频率范围:</label>&nbsp;<span>{{
+                        freqRangeLabel
+                      }}</span>
+                    </p>
+                    <v-range-slider
+                      :min="0"
+                      :max="24400"
+                      step="100"
+                      v-model="captureSettings.freqRange"
+                    >
+                    </v-range-slider>
+
+                    <p>
+                      <label>距离:</label>&nbsp;<span>{{ distanceLabel }}</span>
+                    </p>
+                    <v-slider
+                      dense
+                      :min="100"
+                      :max="3500"
+                      step="100"
+                      v-model="captureSettings.distance"
+                    >
+                    </v-slider>
+
+                    <v-card-actions>
+                      <v-btn
+                        small
+                        :disabled="!gwOpsEnabled"
+                        @click="setCaptureParamsMulti"
+                        >设置采集参数</v-btn
+                      >
+                    </v-card-actions>
+                  </v-card>
+                </div>
+              
+              <v-card-actions class="settings-panel-footer justify-end">
+                <p class="setting-note">
+                  更改配置即时生效
+                </p>
+                <v-btn class="setting-panel-btn-text" @click="dialog.value = false">关闭</v-btn>
+              </v-card-actions>
+            </v-card>
+          </template>
+        </v-dialog>
+        </div>
         <div class="box-container">
           <cam-box
             ref="box"
@@ -40,10 +227,10 @@
             @state-changed="onBoxStateChanged"
           />
         </div>
-      </div>
+    </div>
     </div>
 
-    <v-navigation-drawer v-model="drawerRight" app clipped right width="308">
+    <!-- <v-navigation-drawer v-model="drawerRight" app clipped right width="308">
       <aside class="panel panel-opt__wrap">
         <div class="setting-container">
           <v-card class="pa-3 panel panel-opt" width="292">
@@ -205,7 +392,7 @@
           </v-card>
         </div>
       </aside>
-    </v-navigation-drawer>
+    </v-navigation-drawer> -->
   </div>
 </template>
 
@@ -215,7 +402,7 @@ import * as appConfigModule from "../components/appConfig.js";
 import addressList from "../components/address.vue";
 import WsClient from "../components/WsClient.js";
 import hlsPlayer from "../components/HlsPlayer";
-
+// import { mdiCogOutline } from '@mdi';
 var imageModes = ["auto", "fixed", "avg"];
 const methodName_SetParam = "setParam";
 
@@ -470,10 +657,20 @@ export default {
 </script>
 
 <style>
+.monitor-container {
+  display: flex;
+  flex-direction: column;
+}
+.box-column .setting-btn-row {
+  display: flex;
+  flex-direction: row;
+  align-self: flex-end;
+}
 .box-container {
   display: flex;
   flex-flow: row wrap;
-  /* justify-content: space-evenly; */
+  gap: 5px 10px; /* row-gap column gap */
+  align-items: flex-start;
   justify-content: space-around;
 }
 .box-column {
@@ -482,11 +679,55 @@ export default {
   align-items: center;
 }
 .setting-container {
-  display: flex;
+  /* display: flex;
   flex-flow: column;
-  justify-content: space-around;
+  justify-content: space-around; */
+  display: grid;
+    /* grid: 120px 210px / auto auto auto; */
+    /* grid: auto auto / auto auto auto; */
+    /* grid-template-rows: 1fr 1fr; */
+    grid-template-columns: auto auto auto;
+    grid-auto-flow: column;
+    gap: 5px 8px;
+}
+ .acq-opt {
+  grid-row: 1 /  3;
+  grid-column: 1;
+  place-self: stretch stretch;
+}
+ .control {
+  grid-row: 1 / 2;
+  grid-column: 2;
+  place-self: stretch stretch;
 }
 
+ .img-param {
+  grid-row: 2 / 3;
+  grid-column: 2;
+  place-self: stretch stretch;
+}
+ .acq-param {
+  grid-row: 1 / 3;
+  grid-column: 3;
+  place-self: stretch stretch;
+  margin: 0px;
+}
+.settings-panel-footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  /* align-items: center; */
+  gap: 15px;
+}
+ .settings-panel-footer .setting-note {
+  margin-bottom: 0px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #8e8e8f;
+}
+.settings-panel-footer .setting-panel-btn-text {
+  font-weight: 700;
+}
 /* 设备列表项前的复选框减小间距 */
 .panel .v-card .v-list-item__action:first-child {
   margin-right: 0;
@@ -500,7 +741,7 @@ export default {
 /* 控制“成像参数”tab宽度 */
 .panel .v-card .v-tab {
   padding: 0;
-  min-width: 80px;
+  /* min-width: 80px; */
 }
 
 .cambox {
