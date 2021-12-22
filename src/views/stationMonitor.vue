@@ -34,13 +34,13 @@
             <div class="setting-btn-row">
         <v-dialog transition="dialog-bottom-transition" max-width="888">
           <template  v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" v-bind="attrs" v-on="on"
+            <v-btn class="setting-panel-btn-label pa-1" color="grey lighten-1" v-bind="attrs" v-on="on"
               ><v-icon small>mdi-cog-outline</v-icon>控制面板</v-btn>
             
           </template>
           <template v-slot:default="dialog">
             <v-card class="settings">
-              <v-toolbar color="primary" dark>控制面板</v-toolbar>
+              <v-toolbar color="grey darken-2" dark>控制面板</v-toolbar>
                 <div class="setting-container">
                   <v-card class="pa-3 ml-2 mt-2 panel acq-opt"  >
                     <v-card-title>
@@ -666,6 +666,9 @@ export default {
   flex-direction: row;
   align-self: flex-end;
 }
+.setting-panel-btn-label {
+  font-weight: 700;
+}
 .box-container {
   display: flex;
   flex-flow: row wrap;
@@ -679,16 +682,10 @@ export default {
   align-items: center;
 }
 .setting-container {
-  /* display: flex;
-  flex-flow: column;
-  justify-content: space-around; */
   display: grid;
-    /* grid: 120px 210px / auto auto auto; */
-    /* grid: auto auto / auto auto auto; */
-    /* grid-template-rows: 1fr 1fr; */
-    grid-template-columns: auto auto auto;
-    grid-auto-flow: column;
-    gap: 5px 8px;
+  grid-template-columns: auto auto auto;
+  grid-auto-flow: column;
+  gap: 5px 8px;
 }
  .acq-opt {
   grid-row: 1 /  3;

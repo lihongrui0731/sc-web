@@ -4,8 +4,8 @@
     <v-navigation-drawer v-model="drawerLeft" app class="gw-nav">
       <v-list-item>
         <v-list-item-content>
-          <v-list-item-title class="text-h6"> Nav </v-list-item-title>
-          <v-list-item-subtitle> 击穿系统 </v-list-item-subtitle>
+          <v-list-item-title class="nav-title"> 击穿定位系统 </v-list-item-title>
+          <v-list-item-subtitle class="nav-subtitle"> Rhythm-tech </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
 
@@ -22,6 +22,7 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
+      <v-img href="./assets/img/rhythm-tech.png" class="nav-logo" alt="Rhythm-tech"></v-img>
     </v-navigation-drawer>
 
     <v-app-bar app>
@@ -49,9 +50,6 @@
 <script>
 import WsClient from "./components/WsClient.js";
 import gwAddress from "./components/address.vue";
-// import addressList from "./components/address.vue"
-
-// var imageModes = ["auto", "fixed", "avg"];
 
 export default {
   components: {
@@ -72,59 +70,8 @@ export default {
         // { title: "Test", icon: "mdi-help-box", to: "/Test" },
         // { title: "Arcade", icon: "mdi-help-box", to: "/About" },
       ],
-      right: null,
       /** 控制左侧面板的显示 */
       drawerLeft: true,
-      /** 控制右侧面板的显示 */
-      drawerRight: false,
-
-      // appInfo: appConfigModule.appInfo,
-      // uiOptions: appConfigModule.uiOptions,
-
-      /** 网关提供 WebSocket 服务的端口 */
-      gwPort: 6380,
-
-      /* 网关 ws 的确定方式：从列表中选择，或采用当前页面所在主机地址 */
-      // gwPickMode: appConfigModule.gwPickMode,
-
-      /** 可选择的网关地址列表 */
-      gwAddresses: [ ],
-
-      /** 当前选定要连接的网关地址 */
-      selectedGwAddr: [],
-      /** 是否可对网关发出操作，由当前已连接的各网关的状态决定 */
-      gwOpsEnabled: false,
-
-      picks: {
-        cameraMode: [
-          { value: "640@16", label: "640x480 @ 16fps" },
-          { value: "320@50", label: "320x240 @ 50fps" },
-        ],
-        acousticFrameRate: [
-          { value: 50, label: "50 fps" },
-          { value: 100, label: "100 fps" },
-        ],
-      },
-
-      captureOptions: {
-        cameraMode: "640@16",
-        acousticFrameRate: 50,
-      },
-
-      captureSettings: {
-        freqRange: [4000, 7000],
-        distance: 3000,
-        //cameraLighting: false,
-      },
-      imageSettings: {
-        modeIndex: 0,
-        imageMode: "auto",
-        dynamicRange: 1.1,
-        fixedThreshold: 60,
-        thresholdMargin: 5.0,
-      },
-
-      running: null,
     };
   },
   // computed: {
@@ -141,11 +88,17 @@ export default {
 <style>
 .gw-nav .nav-menu .v-list-item .v-list-item__title{
   font-size: 0.8125rem;
-  /* font-family: Arial; */
   font-style: normal;
   font-variant: normal;
   font-weight: 700;
   line-height: 20px;
+}
+.gw-nav .v-list-item .nav-title {
+  font-size: 22px;
+  font-weight: 700;
+}
+.nav-subtitle{
+  font-weight: 700;
 }
 .app-root .v-label,
 .app-container .v-label {

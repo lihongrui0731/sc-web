@@ -16,9 +16,10 @@
     <div class="info-row top">
       <input
         type="checkbox"
-        enabled
+        disabled
         v-model="isWsConnected"
         id="ws-state-checkbox"
+        class="mt-2 mr-2"
       />
       <label class="info-cell" for="ws-state-checkbox"
         >{{ `网关地址: ${gwAddress}` }}&nbsp;</label
@@ -27,6 +28,10 @@
       ><span class="info-cell" v-if="durationSeconds"
         >:&nbsp;{{ durationSeconds }}秒</span
       >
+      <v-spacer></v-spacer>
+      <label class="info-cell battery-life mt-2">
+        {{`电量: ${batteryLife}%`}}
+      </label>
     </div>
     <!-- charts -->
     <div id="chart1">
@@ -37,7 +42,7 @@
     <v-list class="videoStream">
       <v-list-item>
         <v-list-group :value="true" no-action sub-group>
-          <template v-slot:activator>
+          <template color="grey darken-2" v-slot:activator>
             <v-list-item-content>
               <v-list-item-title class="videoSwitch"
                 >展开或收起视频</v-list-item-title
@@ -135,6 +140,7 @@ export default {
       durationSeconds: null,
       deviceInfo: {},
       isDeviceConnected: false,
+      batteryLife: 0,
 
       viewMode: "snapshot",
       pictureSize: {
@@ -157,6 +163,7 @@ export default {
           bottom: "20%",
           top: "10%",
         },
+        animation: false,
         xAxis: {
           type: "category",
           boundaryGap: false,
@@ -204,7 +211,6 @@ export default {
   },
 
   mounted() {
-    // this.draw();
     this.optionLeq;
     //异步初始化echarts
      function initEcharts() {
@@ -283,10 +289,6 @@ export default {
     },
   },
   methods: {
-    // draw() {
-      // this.chartObj = echarts.init(document.getElementById("chart"));
-      // this.chartObj.setOption(optionLeq);
-    // },
     setDym: setInterval(() => {
       addData(true);
     }, 500),
@@ -514,7 +516,7 @@ export default {
 .cambox .info-row {
   display: flex;
   flex-flow: row nowrap;
-  align-items: center;
+  align-items: flex-end;
   font-size: 12px;
   font-weight: 700;
   padding: 0 12px;
@@ -529,9 +531,17 @@ export default {
   display: inline-block;
   color: rgba(255, 255, 255, 0.3);
 }
-/* .cambox .info-row.top .info-cell {
+.cambox .info-row.top .info-cell {
   margin-top: 8px;
-} */
+}
+.cambox .info-row.top {
+  background-color: #BDBDBD;
+  display: flex;
+  flex-flow: row nowrap;
+}
+.cambox .info-row.top .battery-life {
+  align-self: flex-end;
+}
 .cambox .info-row.bottom .info-cell {
   margin-bottom: 8px;
 }

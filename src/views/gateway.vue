@@ -1,6 +1,6 @@
 <template>
   <v-sheet
-    class="sheet"
+    class="front-sheet mt-4"
     color="white"
     elevation="2"
     height="500"
@@ -16,6 +16,7 @@
           depressed
           small
           height="24px"
+          color="#f5f5f5"
           @click="addNewAddress"
           ><span class="addNewBtn">加入</span></v-btn
         >
@@ -79,19 +80,23 @@ export default {
 };
 </script>
 <style>
+.front-sheet {
+  border: 1px;
+  border-color: black;
+}
 .addNew {
-  margin-top: 18px;
+  background-color: #757575;
 }
 .addNewLabel {
-  color: #535355;
+  color: #FAFAFA;
   font-size: 16px;
-  /* font-family: Arial; */
   font-style: normal;
   font-variant: normal;
   font-weight: 700;
   line-height: 20px;
 }
 input {
+  background-color: #FAFAFA;
   border: 2px solid black;
 }
 .type-in {
@@ -102,18 +107,16 @@ input {
   flex-wrap: nowrap;
 }
 .addNewBtn {
-    font-size: 12px;
-  /* font-family: Arial; */
-  font-style: normal;
-  font-variant: normal;
+  font-size: 12px;
   font-weight: 700;
+  /* color: #FAFAFA; */
 }
 .addNewNote {
   margin-top: 18px;
   margin-bottom: 5px;
-  color: #535355;
+  /* color: #535355; */
+  color: #FAFAFA;
   font-size: 14px;
-  /* font-family: Arial; */
   font-style: normal;
   font-variant: normal;
   font-weight: 400;
