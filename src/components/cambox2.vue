@@ -29,7 +29,7 @@
         >:&nbsp;{{ durationSeconds }}秒</span
       >
       <v-spacer></v-spacer>
-      <label class="info-cell battery-life mt-2">
+      <label class="info-cell battery-life">
         {{`电量: ${batteryLife}%`}}
       </label>
     </div>
@@ -165,17 +165,19 @@ export default {
         },
         animation: false,
         xAxis: {
-          type: "category",
+          type: "time",
           boundaryGap: false,
+          // min: -20,
+          // max: 0,
           inverse: true,
           data: xAxisData,
-          interval: 1,
+          interval: 1000,
           axisLabel: {
             show: true,
           
           },
           axisLabel: {
-            // formatter: "{HH}:{mm}:{ss}:{SSS}",
+            formatter: "{ss}:{SSS}",
             show: true,
           },
           splitLine: {
@@ -529,10 +531,11 @@ export default {
 
 .cambox .info-cell {
   display: inline-block;
-  color: rgba(255, 255, 255, 0.3);
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.7);
 }
 .cambox .info-row.top .info-cell {
-  margin-top: 8px;
+  margin-top: 6px;
 }
 .cambox .info-row.top {
   background-color: #BDBDBD;

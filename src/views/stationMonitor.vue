@@ -27,14 +27,14 @@
           </v-list>
         </v-card>
       </div> -->
-      <div class="box-column">
+      <div class="box-column ml-2 mr-2">
         <!-- <v-app-bar-nav-icon
           @click="drawerRight = !drawerRight"
         ></v-app-bar-nav-icon> -->
             <div class="setting-btn-row">
         <v-dialog transition="dialog-bottom-transition" max-width="888">
           <template  v-slot:activator="{ on, attrs }">
-            <v-btn class="setting-panel-btn-label pa-1" color="grey lighten-1" v-bind="attrs" v-on="on"
+            <v-btn class="setting-panel-btn-label pa-1"  v-bind="attrs" v-on="on"
               ><v-icon small>mdi-cog-outline</v-icon>控制面板</v-btn>
             
           </template>
@@ -769,17 +769,17 @@ export default {
   font-size: 12px;
 }
 
-.cambox .info-cell {
+/* .cambox .info-cell {
   display: inline-block;
   color: rgba(0, 0, 0, 0.38);
   margin-right: 12px;
-}
+} */
 
-.cambox .info-row.top .info-cell {
+/* .cambox .info-row.top .info-cell {
   margin-top: 8px;
 }
 
 .cambox .info-row.bottom .info-cell {
   margin-bottom: 8px;
-}
+} */
 </style>
