@@ -16,9 +16,10 @@
     <div class="info-row top">
       <input
         type="checkbox"
-        enabled
+        disabled
         v-model="isWsConnected"
         id="ws-state-checkbox"
+        class="mt-2 mr-2"
       />
       <label class="info-cell" for="ws-state-checkbox"
         >{{ `网关地址: ${gwAddress}` }}&nbsp;</label
@@ -27,21 +28,47 @@
       ><span class="info-cell" v-if="durationSeconds"
         >:&nbsp;{{ durationSeconds }}秒</span
       >
+      <v-spacer></v-spacer>
+      <label class="info-cell battery-life">
+        {{`电量: ${batteryLife}%`}}
+      </label>
     </div>
-    <canvas
-      ref="camCanvas"
-      :width="pictureSize.width"
-      :height="pictureSize.height"
-      class="cam-canvas"
-      :style="canvasStyle"
-    />
-    <video
-      ref="camVideo"
-      :width="pictureSize.width"
-      :height="pictureSize.height"
-      class="cam-video"
-      :style="videoStyle"
-    />
+    <!-- charts -->
+    <div id="chart1">
+      <!-- <div class="chart" ref="chart1Ref"></div> -->
+      <v-chart class="chart" :option="optionLeq"></v-chart>
+    </div>
+
+    <v-list class="videoStream">
+      <v-list-item>
+        <v-list-group :value="true" no-action sub-group>
+          <template color="grey darken-2" v-slot:activator>
+            <v-list-item-content>
+              <v-list-item-title class="videoSwitch"
+                >展开或收起视频</v-list-item-title
+              >
+            </v-list-item-content>
+          </template>
+          <v-list-item-content>
+            <canvas
+              ref="camCanvas"
+              :width="pictureSize.width"
+              :height="pictureSize.height"
+              class="cam-canvas"
+              :style="canvasStyle"
+            />
+            <video
+              ref="camVideo"
+              :width="pictureSize.width"
+              :height="pictureSize.height"
+              class="cam-video"
+              :style="videoStyle"
+            />
+          </v-list-item-content>
+        </v-list-group>
+      </v-list-item>
+    </v-list>
+
     <div class="info-row bottom">
       <span class="info-cell">{{ deviceInfoText }}</span>
       <span class="info-cell" v-if="cameraStatus === 'recording'">
@@ -53,14 +80,16 @@
         <v-chip label x-small>待命</v-chip>
       </span>
     </div>
-    <!-- charts -->
-    <div></div>
   </div>
 </template>
 <script>
 import ImgLoader from "../components/imgLoader";
 import wsClient from "../components/WsClient.js";
 import HlsPlayer from "../components/HlsPlayer.js";
+// import {ref} from "vue";
+
+import * as echarts from "echarts";
+import VChart from "vue-echarts";
 
 const wsPort = 6380;
 const wsInitConnDelay = 30; // 首次连接的延迟
@@ -69,10 +98,34 @@ const maxRetryTimes = 5; // 重试连接次数上限
 
 let hlsPlayer;
 let imageLoader;
+
+// var chartDom = document.getElementById('chart');
+// var chart = echarts.init(chartDom);
+
+var xAxisData = [ 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -17, -18, -19, -20 ];
+var data = [Math.random() * 150];
+
+// + data[data.length - 1]
+
+function addData(shift) {
+  // now = [now.getFullYear(), now.getMonth() + 1, now.getDate()].join("/");
+  // xAxisData.push(now);
+  data.unshift((Math.random() ) * 100 );
+  if (data.length > xAxisData.length) {
+    // xAxisData.shift();
+    data.pop();
+  }
+  // now = new Date(+new Date(now) + oneDay);
+}
+for (var i = 1; i < 100; i++) {
+  addData();
+}
+// console.log(optionLeq);
+
 export default {
-  components: { 
-    // WsClient, 
-  "ws-client": wsClient 
+  components: {
+    "ws-client": wsClient,
+    "v-chart": VChart,
   },
   props: ["gwAddress"],
   data() {
@@ -87,6 +140,7 @@ export default {
       durationSeconds: null,
       deviceInfo: {},
       isDeviceConnected: false,
+      batteryLife: 0,
 
       viewMode: "snapshot",
       pictureSize: {
@@ -100,9 +154,76 @@ export default {
         position: 0,
       },
       cameraStatus: "",
+
+      //chart
+      optionLeq: {
+        grid: {
+          left: "5%",
+          right: "5%",
+          bottom: "20%",
+          top: "10%",
+        },
+        animation: false,
+        xAxis: {
+          type: "time",
+          boundaryGap: false,
+          // min: -20,
+          // max: 0,
+          inverse: true,
+          data: xAxisData,
+          interval: 1000,
+          axisLabel: {
+            show: true,
+          
+          },
+          axisLabel: {
+            formatter: "{ss}:{SSS}",
+            show: true,
+          },
+          splitLine: {
+            show: true,
+          },
+        },
+        yAxis: {
+          position: "left",
+          boundaryGap: [0, "50%"],
+          type: "value",
+          max: 300,
+          axisLabel: {
+            show: true,
+          },
+          axisLine: {
+            show: false,
+          },
+        },
+        series: [
+          {
+            type: "line",
+            smooth: true,
+            symbol: "none",
+            // stack: 'a',
+            // areaStyle: {
+            //   normal: {}
+            // },
+            data: data,
+          },
+        ],
+      },
     };
   },
+
   mounted() {
+    this.optionLeq;
+    //异步初始化echarts
+     function initEcharts() {
+       let newPromise = new Promise((resolve) =>{
+         resolve()
+        })
+        newPromise.then(() => {
+          echarts.init(chartDom);
+        }
+        )};
+
     // 启动连接维持定时器
     if (this.gwAddress) {
       this.checkWsConnection(true);
@@ -113,6 +234,11 @@ export default {
 
     // show placeholder image
     imageLoader.loadAndDrawImage(this.$refs.sampleImg.src);
+
+    // const el1 = this.$refs.chart1Ref;
+    // echarts.dispose(el1);
+    // this.chart1 = echarts.init(el1);
+    // this.chart.setOption(optionLeq);
   },
   beforeDestroy() {
     this.stopConnectionChecking(true);
@@ -145,7 +271,7 @@ export default {
 
     deviceInfoText() {
       if (!this.isDeviceConnected) {
-        return "未连接设备";
+        return "未连接采集设备";
       } else {
         return (
           "设备SN: " +
@@ -158,11 +284,16 @@ export default {
 
     hasSessionData() {
       return (
-        this.sessionProgress.endTimestamp - this.sessionProgress.beginTimestamp > 100
+        this.sessionProgress.endTimestamp -
+          this.sessionProgress.beginTimestamp >
+        100
       );
     },
   },
   methods: {
+    setDym: setInterval(() => {
+      addData(true);
+    }, 500),
     /** 计划一次连接检查 */
     scheduleConnectionChecking(delay) {
       this.checkedTimes++;
@@ -368,22 +499,28 @@ export default {
 </script>
 <style>
 .cambox {
-  /* width: 410px; */
+  width: 700px;
   position: relative;
   display: flex;
   flex-flow: column nowrap;
+  /* flex-grow: 2; */
 }
 
 .cambox .cam-canvas,
 .cambox .cam-video {
   margin: 0 -1px;
 }
-
+.videoStream .videoSwitch {
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.562);
+}
 .cambox .info-row {
   display: flex;
   flex-flow: row nowrap;
-  align-items: center;
+  align-items: flex-end;
   font-size: 12px;
+  font-weight: 700;
   padding: 0 12px;
 }
 .cambox .info-row .v-input,
@@ -394,12 +531,24 @@ export default {
 
 .cambox .info-cell {
   display: inline-block;
-  color: rgba(255, 255, 255, 0.3);
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.7);
 }
-/* .cambox .info-row.top .info-cell {
-  margin-top: 8px;
-} */
+.cambox .info-row.top .info-cell {
+  margin-top: 6px;
+}
+.cambox .info-row.top {
+  background-color: #BDBDBD;
+  display: flex;
+  flex-flow: row nowrap;
+}
+.cambox .info-row.top .battery-life {
+  align-self: flex-end;
+}
 .cambox .info-row.bottom .info-cell {
   margin-bottom: 8px;
+}
+.chart {
+  height: 100px;
 }
 </style>

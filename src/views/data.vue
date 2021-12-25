@@ -1,8 +1,8 @@
 <template>
-  <div class="container">
+  <div class="data-container mt-2">
     <div class="addrSelect">
       <v-card max-width="500">
-        <v-list>
+        <v-list dense>
           <v-list-item-group
             active-class="border"
             color="indigo"
@@ -15,12 +15,13 @@
             >
               <!-- 网关地址 -->
               <v-list-item-content>
-                <v-list-item-title>{{ addr }}</v-list-item-title>
+                <v-list-item-title class="addrSelectTitle">{{ addr }}</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </v-list-item-group>
         </v-list>
       </v-card>
+      <p class="note">点选设备对应的地址后可查看数据</p>
     </div>
 
     <!-- 表格 -->
@@ -30,15 +31,13 @@
         :items="fileLinks"
         :items-per-page="10"
         class="elevation-1"
-        no-data-text="当 前 无 数 据"
+        no-data-text="当 前 未 选 中 设 备"
       >
-      <template
-      v-slot:item.name="{item}"
-      >
-<a :href="`http://${selectedGwAddr}/tdms/${item.name}`" >
-  {{item.name}}
-  </a>
-      </template>
+        <template v-slot:item.name="{ item }">
+          <a :href="`http://${selectedGwAddr}/tdms/${item.name}`">
+            {{ item.name }}
+          </a>
+        </template>
       </v-data-table>
     </div>
   </div>
@@ -50,7 +49,7 @@ import fileListService from "../services/fileList";
 export default {
   data() {
     return {
-selectedGwAddr: null,
+      selectedGwAddr: null,
       selectedGwAddrs: [],
       //dataTable
       headers: [
@@ -65,16 +64,15 @@ selectedGwAddr: null,
   },
 
   methods: {
-   
     async loadLinks(addr) {
-      const results= await fileListService.getDataByDevice(addr);
+      const results = await fileListService.getDataByDevice(addr);
       console.log(results);
       this.fileLinks = results;
     },
     onSelectedChange(index) {
-      this.selectedGwAddr = this.selectedGwAddrs[index]
-      console.log(index)
-    }
+      this.selectedGwAddr = this.selectedGwAddrs[index];
+      console.log(index);
+    },
   },
 
   mounted() {
@@ -83,12 +81,30 @@ selectedGwAddr: null,
 };
 </script>
 <style>
-.container {
+.data-container {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
 }
 .border {
   border: 2px dashed orange;
+}
+.addrSelectTitle {
+  text-align: center;
+}
+.note {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  color: #535355;
+  width: 150px;
+  font-size: 14px;
+  /* font-family: Arial; */
+  font-style: normal;
+  font-variant: normal;
+  font-weight: 400;
+  line-height: 20px;
+}
+.v-data-table {
+  width: 574px;
 }
 </style>

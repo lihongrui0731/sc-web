@@ -7,13 +7,16 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@mdi/font": "^6.5.95",
     "axios": "^0.23.0",
     "core-js": "^3.6.5",
+    "echarts": "^5.2.2",
     "element-ui": "^2.15.6",
     "hls.js": "^1.0.12",
     "primeicons": "^4.1.0",
     "primevue": "^3.8.0",
     "vue": "^2.6.14",
+    "vue-echarts": "^6.0.0",
     "vue-router": "^3.2.0",
     "vuetify": "^2.4.0",
     "vuex": "^3.6.2"
@@ -23,6 +26,7 @@
     "@vue/cli-plugin-router": "~4.5.0",
     "@vue/cli-plugin-vuex": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
+    "@vue/composition-api": "^1.4.1",
     "sass": "~1.32.0",
     "sass-loader": "^10.0.0",
     "vue-cli-plugin-vuetify": "~2.4.2",
