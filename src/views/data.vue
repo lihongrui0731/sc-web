@@ -4,14 +4,14 @@
       <v-card max-width="500">
         <v-list dense>
           <v-list-item-group
-            active-class="border"
-            color="indigo"
             @change="onSelectedChange"
           >
+          <!-- active-class="border" -->
+            <!-- color="indigo" -->
             <v-list-item
               v-for="addr in selectedGwAddrs"
               :key="addr"
-              @click="loadLinks(addr)"
+              @click="loadFiles(addr)"
             >
               <!-- 网关地址 -->
               <v-list-item-content>
@@ -28,10 +28,10 @@
     <div class="dataTable">
       <v-data-table
         :headers="headers"
-        :items="fileLinks"
+        :items="fileRows"
         :items-per-page="10"
         class="elevation-1"
-        no-data-text="当 前 未 选 中 设 备"
+        no-data-text="未选中设备或暂无数据"
       >
         <template v-slot:item.name="{ item }">
           <a :href="`http://${selectedGwAddr}/tdms/${item.name}`">
@@ -57,17 +57,18 @@ export default {
         { text: "Time", value: "mtime" },
         { text: "Size", value: "size" },
       ],
-      fileLinks: [
+      fileRows: [
         // { name: "", time: "", size: "" },
       ],
     };
   },
 
   methods: {
-    async loadLinks(addr) {
+    async loadFiles(addr) {
       const results = await fileListService.getDataByDevice(addr);
       console.log(results);
-      this.fileLinks = results;
+      
+      this.fileRows = results;
     },
     onSelectedChange(index) {
       this.selectedGwAddr = this.selectedGwAddrs[index];
@@ -105,6 +106,6 @@ export default {
   line-height: 20px;
 }
 .v-data-table {
-  width: 574px;
+  width: 580px;
 }
 </style>
