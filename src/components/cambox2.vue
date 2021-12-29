@@ -30,7 +30,7 @@
       >
       <v-spacer></v-spacer>
       <label class="info-cell battery-life">
-        {{`电量: ${batteryLife}%`}}
+        {{ `电量: ${batteryLife}%` }}
       </label>
     </div>
     <!-- charts -->
@@ -90,6 +90,7 @@ import HlsPlayer from "../components/HlsPlayer.js";
 
 import * as echarts from "echarts";
 import VChart from "vue-echarts";
+import moment from "moment";
 
 const wsPort = 6380;
 const wsInitConnDelay = 30; // 首次连接的延迟
@@ -101,24 +102,38 @@ let imageLoader;
 
 // var chartDom = document.getElementById('chart');
 // var chart = echarts.init(chartDom);
-
-var xAxisData = [ 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -17, -18, -19, -20 ];
-var data = [Math.random() * 150];
-
+// var xAxisData = [ 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -17, -18, -19, -20 ];
+// var xAxisData = [];
+// var data = [Math.random() * 150];
+// var data = [];
+let demo = [];
+const labels = [];
+const values = [];
 // + data[data.length - 1]
-
-function addData(shift) {
-  // now = [now.getFullYear(), now.getMonth() + 1, now.getDate()].join("/");
-  // xAxisData.push(now);
-  data.unshift((Math.random() ) * 100 );
-  if (data.length > xAxisData.length) {
-    // xAxisData.shift();
-    data.pop();
-  }
-  // now = new Date(+new Date(now) + oneDay);
+function roundValue(value) {
+  return Math.round(value * 1000000) / 1000000;
 }
-for (var i = 1; i < 100; i++) {
-  addData();
+for (let i = 0; i < 20; i++) {
+  demo.push(Math.random() * 100);
+}
+console.log(demo);
+function buildDemoData() {
+  let base = Date.now();
+  console.log(base);
+for (let i = 0; i < 20; i++) {
+}
+}
+// function addData(shift) {
+
+//   data.unshift((Math.random() ) * 100 );
+//   if (data.length > xAxisData.length) {
+//     data.pop();
+//   }
+//   // now = new Date(+new Date(now) + oneDay);
+// }
+for (var i = 1; i < 1000; i++) {
+  // addData();
+  // this.refreshCharts();
 }
 // console.log(optionLeq);
 
@@ -169,20 +184,18 @@ export default {
           boundaryGap: false,
           // min: -20,
           // max: 0,
+          // interval: 1000,
           inverse: true,
-          data: xAxisData,
-          interval: 1000,
+          data: [],
           axisLabel: {
-            show: true,
-          
-          },
-          axisLabel: {
-            formatter: "{ss}:{SSS}",
+            formatter: "-{s}.{S}",
             show: true,
           },
           splitLine: {
             show: true,
+            interval: 1000,
           },
+          splitNumber: 20,
         },
         yAxis: {
           position: "left",
@@ -205,7 +218,7 @@ export default {
             // areaStyle: {
             //   normal: {}
             // },
-            data: data,
+            data: [],
           },
         ],
       },
@@ -215,15 +228,18 @@ export default {
   mounted() {
     this.optionLeq;
     //异步初始化echarts
-     function initEcharts() {
-       let newPromise = new Promise((resolve) =>{
-         resolve()
-        })
-        newPromise.then(() => {
-          echarts.init(chartDom);
-        }
-        )};
-
+    // function initEcharts() {
+    //   let newPromise = new Promise((resolve) => {
+    //     resolve();
+    //   });
+    //   newPromise.then(() => {
+    //     echarts.init(chartDom);
+    //   });
+    // }
+    setInterval(() => {
+      // addData(true);
+      // this.refreshCharts();
+    }, 1000);
     // 启动连接维持定时器
     if (this.gwAddress) {
       this.checkWsConnection(true);
@@ -234,12 +250,8 @@ export default {
 
     // show placeholder image
     imageLoader.loadAndDrawImage(this.$refs.sampleImg.src);
-
-    // const el1 = this.$refs.chart1Ref;
-    // echarts.dispose(el1);
-    // this.chart1 = echarts.init(el1);
-    // this.chart.setOption(optionLeq);
   },
+
   beforeDestroy() {
     this.stopConnectionChecking(true);
     console.debug(`beforeDestroy, closing ws ${this.gwAddress}`);
@@ -291,9 +303,13 @@ export default {
     },
   },
   methods: {
-    setDym: setInterval(() => {
-      addData(true);
-    }, 500),
+    refreshCharts(labels, values) {
+      [labels, values] = buildDemoData();
+      // console.debug(labels, values);
+      this.optionLeq.xAxis.data = labels;
+      this.optionLeq.series.data = values;
+    },
+
     /** 计划一次连接检查 */
     scheduleConnectionChecking(delay) {
       this.checkedTimes++;
@@ -538,7 +554,7 @@ export default {
   margin-top: 6px;
 }
 .cambox .info-row.top {
-  background-color: #BDBDBD;
+  background-color: #bdbdbd;
   display: flex;
   flex-flow: row nowrap;
 }
