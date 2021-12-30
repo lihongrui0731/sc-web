@@ -100,29 +100,33 @@ const maxRetryTimes = 5; // 重试连接次数上限
 let hlsPlayer;
 let imageLoader;
 
-// var chartDom = document.getElementById('chart');
-// var chart = echarts.init(chartDom);
 // var xAxisData = [ 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -17, -18, -19, -20 ];
 // var xAxisData = [];
 // var data = [Math.random() * 150];
 // var data = [];
+let d = [];
 let demo = [];
 const labels = [];
 const values = [];
-// + data[data.length - 1]
 function roundValue(value) {
   return Math.round(value * 1000000) / 1000000;
 }
 for (let i = 0; i < 20; i++) {
-  demo.push(Math.random() * 100);
+  d.push(Math.random() * 100);
 }
-console.log(demo);
 function buildDemoData() {
   let base = Date.now();
   console.log(base);
 for (let i = 0; i < 20; i++) {
+  demo.unshift({
+    timestamp: base + i * 40,
+    value: d[i]
+});
+  console.log(demo);
 }
 }
+
+buildDemoData();
 // function addData(shift) {
 
 //   data.unshift((Math.random() ) * 100 );
@@ -186,7 +190,7 @@ export default {
           // max: 0,
           // interval: 1000,
           inverse: true,
-          data: [],
+          // data: [],
           axisLabel: {
             formatter: "-{s}.{S}",
             show: true,
@@ -218,7 +222,7 @@ export default {
             // areaStyle: {
             //   normal: {}
             // },
-            data: [],
+            data: demo,
           },
         ],
       },

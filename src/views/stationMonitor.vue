@@ -31,18 +31,52 @@
         <!-- <v-app-bar-nav-icon
           @click="drawerRight = !drawerRight"
         ></v-app-bar-nav-icon> -->
-            <div class="setting-btn-row">
-        <v-dialog transition="dialog-bottom-transition" max-width="888">
-          <template  v-slot:activator="{ on, attrs }">
-            <v-btn class="setting-panel-btn-label pa-1"  v-bind="attrs" v-on="on"
-              ><v-icon small>mdi-cog-outline</v-icon>控制面板</v-btn>
-            
-          </template>
-          <template v-slot:default="dialog">
-            <v-card class="settings">
-              <v-toolbar color="grey darken-2" dark>控制面板</v-toolbar>
+        <div class="setting-btn-row">
+          <v-bottom-sheet max-width="300px" inset>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn class="acq-ctl-btn-label" color="red" dark elevation="3" v-bind="attrs" v-on="on">
+                采集控制
+              </v-btn>
+            </template>
+            <v-card tile>
+              <v-card-title>
+                <v-icon>mdi-play-network-outline</v-icon>设备控制
+              </v-card-title>
+              <v-card-actions class="justify-center ">
+                <v-btn
+                  small
+                  @click="toolbarBtn('record')"
+                  title="启动采集"
+                  :disabled="!gwOpsEnabled"
+                >
+                  <v-icon color="#F44336">mdi-record</v-icon>
+                </v-btn>
+                <v-btn
+                  small
+                  @click="toolbarBtn('stop')"
+                  title="停止采集"
+                  :disabled="!gwOpsEnabled"
+                >
+                  <v-icon>mdi-stop</v-icon>
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-bottom-sheet>
+
+          <v-dialog transition="dialog-bottom-transition" max-width="888">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                class="setting-panel-btn-label pa-1"
+                v-bind="attrs"
+                v-on="on"
+                ><v-icon small>mdi-cog-outline</v-icon>控制面板</v-btn
+              >
+            </template>
+            <template v-slot:default="dialog">
+              <v-card class="settings">
+                <v-toolbar color="grey darken-2" dark>控制面板</v-toolbar>
                 <div class="setting-container">
-                  <v-card class="pa-3 ml-2 mt-2 panel acq-opt"  >
+                  <v-card class="pa-3 ml-2 mt-2 panel acq-opt">
                     <v-card-title>
                       <v-icon>mdi-eye-settings-outline</v-icon>采集选项
                     </v-card-title>
@@ -77,7 +111,7 @@
                     </v-card-actions>
                   </v-card>
 
-                  <v-card class="pa-3 mt-2 panel control" >
+                  <!-- <v-card class="pa-3 mt-2 panel control">
                     <v-card-title>
                       <v-icon>mdi-play-network-outline</v-icon>设备控制
                     </v-card-title>
@@ -99,9 +133,9 @@
                         <v-icon>mdi-stop</v-icon>
                       </v-btn>
                     </v-card-actions>
-                  </v-card>
+                  </v-card> -->
 
-                  <v-card class="pa-3 panel img-param" >
+                  <v-card class="pa-3 panel mt-2 img-param">
                     <v-card-title>
                       <v-icon>mdi-image-auto-adjust</v-icon>成像参数
                     </v-card-title>
@@ -167,12 +201,12 @@
                       />
                     </div>
                   </v-card>
-                  <v-card class="pa-3 mr-2 mt-2 panel acq-param" >
+                  <v-card class="pa-3 mr-2 mt-2 panel acq-param">
                     <v-card-title>
                       <v-icon>mdi-tune</v-icon>采集参数
                     </v-card-title>
 
-                    <p style="width:240px ">
+                    <p style="width: 240px">
                       <label>频率范围:</label>&nbsp;<span>{{
                         freqRangeLabel
                       }}</span>
@@ -207,16 +241,18 @@
                     </v-card-actions>
                   </v-card>
                 </div>
-              
-              <v-card-actions class="settings-panel-footer justify-end">
-                <p class="setting-note">
-                  更改配置即时生效
-                </p>
-                <v-btn class="setting-panel-btn-text" @click="dialog.value = false">关闭</v-btn>
-              </v-card-actions>
-            </v-card>
-          </template>
-        </v-dialog>
+
+                <v-card-actions class="settings-panel-footer justify-end">
+                  <p class="setting-note">更改配置即时生效</p>
+                  <v-btn
+                    class="setting-panel-btn-text"
+                    @click="dialog.value = false"
+                    >关闭</v-btn
+                  >
+                </v-card-actions>
+              </v-card>
+            </template>
+          </v-dialog>
         </div>
         <div class="box-container">
           <cam-box
@@ -227,7 +263,7 @@
             @state-changed="onBoxStateChanged"
           />
         </div>
-    </div>
+      </div>
     </div>
 
     <!-- <v-navigation-drawer v-model="drawerRight" app clipped right width="308">
@@ -661,10 +697,18 @@ export default {
   display: flex;
   flex-direction: column;
 }
+.v-bottom-sheet .bottom-ctl {
+  border: 5px;
+  border-top-color: #f55246;
+}
 .box-column .setting-btn-row {
   display: flex;
   flex-direction: row;
   align-self: flex-end;
+  gap: 8px;
+}
+.acq-ctl-btn-label {
+  font-weight: 700;
 }
 .setting-panel-btn-label {
   font-weight: 700;
@@ -684,27 +728,28 @@ export default {
 .setting-container {
   display: grid;
   grid-template-columns: auto auto auto;
+  grid-template-rows: 300px;
   grid-auto-flow: column;
   gap: 5px 8px;
 }
- .acq-opt {
-  grid-row: 1 /  3;
+.acq-opt {
+  grid-row: 1 / 2;
   grid-column: 1;
   place-self: stretch stretch;
 }
- .control {
+.control {
   grid-row: 1 / 2;
   grid-column: 2;
   place-self: stretch stretch;
 }
 
- .img-param {
-  grid-row: 2 / 3;
+.img-param {
+  grid-row: 1 / 2;
   grid-column: 2;
   place-self: stretch stretch;
 }
- .acq-param {
-  grid-row: 1 / 3;
+.acq-param {
+  grid-row: 1 / 2;
   grid-column: 3;
   place-self: stretch stretch;
   margin: 0px;
@@ -716,7 +761,7 @@ export default {
   /* align-items: center; */
   gap: 15px;
 }
- .settings-panel-footer .setting-note {
+.settings-panel-footer .setting-note {
   margin-bottom: 0px;
   font-size: 14px;
   font-weight: 700;

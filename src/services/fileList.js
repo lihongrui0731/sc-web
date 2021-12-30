@@ -1,16 +1,13 @@
 import axios from "axios";
-// import { resolve } from "core-js/fn/promise";
-
 
 class FileListService {
     async getDataByDevice(addr){
-       
         return axios
         .get(`http://${addr}/tdms/`)
         // .get('/tdms', {params: { device: dvId }})
-        .then((res)=> {
-        console.log(res.data);
-        return res.data
+        .then((raw)=> {
+        console.log(raw.data);
+        return raw.data
         })
         // .catch(handleAxiosError)
     }

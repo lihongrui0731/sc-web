@@ -30,7 +30,7 @@
         @click="drawerLeft = !drawerLeft"
       ></v-app-bar-nav-icon>
       <!-- title -->
-      <v-toolbar-title>声学成像模块</v-toolbar-title>
+      <v-toolbar-title class="app-bar-title">声学成像模块</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
@@ -86,6 +86,9 @@ export default {
 };
 </script>
 <style>
+.app-bar-title{
+  font-weight: 700;
+}
 .gw-nav .nav-menu .v-list-item .v-list-item__title{
   font-size: 0.8125rem;
   font-style: normal;
