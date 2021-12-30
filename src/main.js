@@ -11,7 +11,8 @@ import { CanvasRenderer } from "echarts/renderers";
 import { TooltipComponent, GridComponent } from "echarts/components";
 import { LineChart } from "echarts/charts";
 import { UniversalTransition } from "echarts/features";
-
+import moment from "moment";
+import 'moment/locale/zh-cn';
 use([
   CanvasRenderer,
   TooltipComponent,
@@ -19,7 +20,8 @@ use([
   LineChart,
   UniversalTransition,
 ]);
-
+moment.locale('zh-cn')
+Vue.prototype.$moment = moment
 Vue.config.productionTip = false;
 Vue.component("v-chart", ECharts);
 
