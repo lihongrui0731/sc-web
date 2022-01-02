@@ -104,6 +104,7 @@ let imageLoader;
 // var xAxisData = [];
 // var data = [Math.random() * 150];
 // var data = [];
+
 let d = [];
 let demo = [];
 const labels = [];
@@ -112,7 +113,8 @@ function roundValue(value) {
   return Math.round(value * 1000000) / 1000000;
 }
 for (let i = 0; i < 20; i++) {
-  d.push(Math.random() * 100);
+  // d.push(roundValue(10 + Math.random()));
+  d.push(Math.random() * 15);
 }
 function buildDemoData() {
   let base = Date.now();
@@ -122,8 +124,8 @@ for (let i = 0; i < 20; i++) {
     timestamp: base + i * 40,
     value: d[i]
 });
-  console.log(demo);
 }
+  console.log(demo);
 }
 
 buildDemoData();
@@ -188,7 +190,7 @@ export default {
           boundaryGap: false,
           // min: -20,
           // max: 0,
-          // interval: 1000,
+          interval: 500,
           inverse: true,
           // data: [],
           axisLabel: {
@@ -307,12 +309,12 @@ export default {
     },
   },
   methods: {
-    refreshCharts(labels, values) {
-      [labels, values] = buildDemoData();
-      // console.debug(labels, values);
-      this.optionLeq.xAxis.data = labels;
-      this.optionLeq.series.data = values;
-    },
+    // refreshCharts(labels, values) {
+    //   [labels, values] = buildDemoData();
+    //   // console.debug(labels, values);
+    //   this.optionLeq.xAxis.data = labels;
+    //   this.optionLeq.series.data = values;
+    // },
 
     /** 计划一次连接检查 */
     scheduleConnectionChecking(delay) {

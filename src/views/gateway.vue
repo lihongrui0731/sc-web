@@ -94,6 +94,7 @@ export default {
   font-variant: normal;
   font-weight: 700;
   line-height: 20px;
+  white-space: nowrap;
 }
 input {
   background-color: #FAFAFA;
