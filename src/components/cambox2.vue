@@ -104,31 +104,17 @@ let imageLoader;
 // var xAxisData = [];
 // var data = [Math.random() * 150];
 // var data = [];
-
-let d = [];
-let demo = [];
+  const d = [];
+  let demo = [];
 const labels = [];
 const values = [];
 function roundValue(value) {
   return Math.round(value * 1000000) / 1000000;
 }
-for (let i = 0; i < 20; i++) {
-  // d.push(roundValue(10 + Math.random()));
-  d.push(Math.random() * 15);
-}
-function buildDemoData() {
-  let base = Date.now();
-  console.log(base);
-for (let i = 0; i < 20; i++) {
-  demo.unshift({
-    timestamp: base + i * 40,
-    value: d[i]
-});
-}
-  console.log(demo);
-}
 
-buildDemoData();
+
+
+// buildDemoData();
 // function addData(shift) {
 
 //   data.unshift((Math.random() ) * 100 );
@@ -175,8 +161,8 @@ export default {
         position: 0,
       },
       cameraStatus: "",
-
       //chart
+      
       optionLeq: {
         grid: {
           left: "5%",
@@ -190,7 +176,7 @@ export default {
           boundaryGap: false,
           // min: -20,
           // max: 0,
-          interval: 500,
+          interval: 1000,
           inverse: true,
           // data: [],
           axisLabel: {
@@ -207,7 +193,7 @@ export default {
           position: "left",
           boundaryGap: [0, "50%"],
           type: "value",
-          max: 300,
+          // max: 300,
           axisLabel: {
             show: true,
           },
@@ -224,7 +210,7 @@ export default {
             // areaStyle: {
             //   normal: {}
             // },
-            data: demo,
+            data: [],
           },
         ],
       },
@@ -245,6 +231,7 @@ export default {
     setInterval(() => {
       // addData(true);
       // this.refreshCharts();
+      this.buildDemoData();
     }, 1000);
     // 启动连接维持定时器
     if (this.gwAddress) {
@@ -315,7 +302,23 @@ export default {
     //   this.optionLeq.xAxis.data = labels;
     //   this.optionLeq.series.data = values;
     // },
+buildDemoData() {
 
+  for (let i = 0; i < 20; i++) {
+  // d.push(roundValue(10 + Math.random()));
+  d.push(Math.random() * 150);
+}
+  let base = Date.now();
+  console.log(base);
+  
+for (let i = 0; i < 20; i++) {
+  this.optionLeq.series[0].data.unshift({
+    timestamp: base + i * 40,
+    value: d[i]
+})
+};
+  console.log(this.optionLeq.series[0].data);
+},
     /** 计划一次连接检查 */
     scheduleConnectionChecking(delay) {
       this.checkedTimes++;
