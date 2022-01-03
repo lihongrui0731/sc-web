@@ -176,12 +176,13 @@ export default {
           boundaryGap: false,
           // min: -20,
           // max: 0,
-          interval: 1000,
+          // interval: 500,
           inverse: true,
           // data: [],
           axisLabel: {
             formatter: "-{s}.{S}",
             show: true,
+            interval: 500,
           },
           splitLine: {
             show: true,
@@ -232,7 +233,7 @@ export default {
       // addData(true);
       // this.refreshCharts();
       this.buildDemoData();
-    }, 1000);
+    }, 500);
     // 启动连接维持定时器
     if (this.gwAddress) {
       this.checkWsConnection(true);
@@ -304,19 +305,25 @@ export default {
     // },
 buildDemoData() {
 
-  for (let i = 0; i < 20; i++) {
-  // d.push(roundValue(10 + Math.random()));
-  d.push(Math.random() * 150);
-}
+//   for (let i = 0; i < 20; i++) {
+//   // d.push(roundValue(10 + Math.random()));
+//   d.push(Math.random() * 150);
+// }
+let d = [25, 25, 25, 25, 25, 33, 33, 33, 33, 33, 33, 33, 33, 29, 29, 29, 29, 40, 40, 40];
   let base = Date.now();
-  console.log(base);
+  console.log(moment(base).format("hh:mm:ss:SSS"));
   
 for (let i = 0; i < 20; i++) {
-  this.optionLeq.series[0].data.unshift({
-    timestamp: base + i * 40,
+  this.optionLeq.series[0].data.splice(i, 1, {
+    timestamp: moment(base + i * 40).format("ss:SSS"),
     value: d[i]
 })
 };
+if(this.optionLeq.series[0].data.length > 40) {
+  this.optionLeq.series[0].data.splice(-1, 20);
+}
+
+// this.optionLeq.series[0].data.splice(0, 1, d);
   console.log(this.optionLeq.series[0].data);
 },
     /** 计划一次连接检查 */
