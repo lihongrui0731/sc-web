@@ -29,8 +29,10 @@
         >:&nbsp;{{ durationSeconds }}秒</span
       >
       <v-spacer></v-spacer>
-      <label class="info-cell battery-life">
-        {{ `电量: ${batteryLife}%` }}
+      <label class="info-cell leq-label"
+        >{{ `Leq: ${leqValue}` }}&nbsp;dBA&nbsp;</label>
+      <label class="info-cell battery-level">
+        &nbsp;{{ `电量: ${batteryLevel}%` }}
       </label>
     </div>
     <!-- charts -->
@@ -70,7 +72,7 @@
     </v-list>
 
     <div class="info-row bottom">
-      <span class="info-cell">{{ deviceInfoText }}</span>
+      <span class="info-cell mr-3">{{ deviceInfoText }}</span>
       <span class="info-cell" v-if="cameraStatus === 'recording'">
         <v-chip label x-small>
           <v-icon left color="red">mdi-record-rec</v-icon>采集中...
@@ -104,17 +106,15 @@ let imageLoader;
 // var xAxisData = [];
 // var data = [Math.random() * 150];
 // var data = [];
-  const d = [];
-  let demo = [];
+const d = [];
+let demo = [];
 const labels = [];
 const values = [];
 function roundValue(value) {
   return Math.round(value * 1000000) / 1000000;
 }
 
-
-
-// buildDemoData();
+// buildLeqData();
 // function addData(shift) {
 
 //   data.unshift((Math.random() ) * 100 );
@@ -145,9 +145,6 @@ export default {
       isWsConnected: false,
       lastConnected: null,
       durationSeconds: null,
-      deviceInfo: {},
-      isDeviceConnected: false,
-      batteryLife: 0,
 
       viewMode: "snapshot",
       pictureSize: {
@@ -160,13 +157,23 @@ export default {
         endTimestamp: 100,
         position: 0,
       },
-      cameraStatus: "",
+
+      deviceInfo: {
+        deviceID: null,
+      },
+
+      deviceStatus: {
+        isReady: false,
+        isMeasuring: false,
+      },
+      batteryLevel: 0,
+      leqValue: 0,
       //chart
-      
+
       optionLeq: {
         grid: {
-          left: "5%",
-          right: "5%",
+          left: "2%",
+          right: "10%",
           bottom: "20%",
           top: "10%",
         },
@@ -176,12 +183,13 @@ export default {
           boundaryGap: false,
           // min: -20,
           // max: 0,
-          // interval: 500,
+          interval: 1000,
           inverse: true,
           // data: [],
           axisLabel: {
-            formatter: "-{s}.{S}",
-            show: true,
+            formatter: "{s}:{SSS}",
+            // show: true,
+            show: false,
             interval: 500,
           },
           splitLine: {
@@ -191,10 +199,17 @@ export default {
           splitNumber: 20,
         },
         yAxis: {
-          position: "left",
+          // position: "left",
+          position: "right",
           boundaryGap: [0, "50%"],
           type: "value",
-          // max: 300,
+          min: function (value) {
+            return (value.min - 10).toFixed(0);
+          },
+          max: function (value) {
+            return (value.max + 10).toFixed(0);
+          },
+          interval: 10,
           axisLabel: {
             show: true,
           },
@@ -219,7 +234,7 @@ export default {
   },
 
   mounted() {
-    this.optionLeq;
+    // this.optionLeq;
     //异步初始化echarts
     // function initEcharts() {
     //   let newPromise = new Promise((resolve) => {
@@ -232,7 +247,7 @@ export default {
     setInterval(() => {
       // addData(true);
       // this.refreshCharts();
-      this.buildDemoData();
+      // this.buildLeqData();
     }, 500);
     // 启动连接维持定时器
     if (this.gwAddress) {
@@ -249,7 +264,6 @@ export default {
   beforeDestroy() {
     this.stopConnectionChecking(true);
     console.debug(`beforeDestroy, closing ws ${this.gwAddress}`);
-    this.isDeviceConnected = false;
     if (this.isWsConnected) {
       this.$refs.wsClient.disconnect();
       this.isWsConnected = false;
@@ -274,11 +288,15 @@ export default {
     wsConnectedText() {
       return this.isWsConnected ? "已连接" : "未连接";
     },
-
+    isDeviceConnected() {
+      return this.deviceStatus.isReady && this.deviceInfo.deviceID;
+    },
     deviceInfoText() {
-      if (!this.isDeviceConnected) {
-        return "未连接采集设备";
-      } else {
+      if (!this.deviceStatus.isReady) {
+        console.debug("deviceInfoText - not ready");
+        return "未连接设备";
+      } else if (this.deviceInfo) {
+        console.debug("deviceInfoText - ", JSON.stringify(this.deviceInfo));
         return (
           "设备SN: " +
           this.deviceInfo.deviceSN +
@@ -287,7 +305,15 @@ export default {
         );
       }
     },
-
+    cameraStatus() {
+      if (!this.deviceStatus.isReady) {
+        return null;
+      } else if (!this.deviceStatus.isMeasuring) {
+        return "standby";
+      } else {
+        return "recording";
+      }
+    },
     hasSessionData() {
       return (
         this.sessionProgress.endTimestamp -
@@ -298,34 +324,32 @@ export default {
   },
   methods: {
     // refreshCharts(labels, values) {
-    //   [labels, values] = buildDemoData();
+    //   [labels, values] = buildLeqData();
     //   // console.debug(labels, values);
     //   this.optionLeq.xAxis.data = labels;
     //   this.optionLeq.series.data = values;
     // },
-buildDemoData() {
+    buildLeqData(timestamp, data) {
+      let base = Date.parse(timestamp);
+      let d = [];
+      const dt = data.dt;
+      // const data = dataFrame.data;
+      console.log(moment(base).format("hh:mm:ss.SSS"));
 
-//   for (let i = 0; i < 20; i++) {
-//   // d.push(roundValue(10 + Math.random()));
-//   d.push(Math.random() * 150);
-// }
-let d = [25, 25, 25, 25, 25, 33, 33, 33, 33, 33, 33, 33, 33, 29, 29, 29, 29, 40, 40, 40];
-  let base = Date.now();
-  console.log(moment(base).format("hh:mm:ss:SSS"));
-  
-for (let i = 0; i < 20; i++) {
-  this.optionLeq.series[0].data.splice(i, 1, {
-    timestamp: moment(base + i * 40).format("ss:SSS"),
-    value: d[i]
-})
-};
-if(this.optionLeq.series[0].data.length > 40) {
-  this.optionLeq.series[0].data.splice(-1, 20);
-}
-
-// this.optionLeq.series[0].data.splice(0, 1, d);
-  console.log(this.optionLeq.series[0].data);
-},
+      for (let i = 0; i < 20; i++) {
+        this.optionLeq.series[0].data.unshift({
+          // timestamp: moment(base + i * dt).format("hh:mm:ss.SSS"),
+          timestamp: base + i * dt,
+          value: data.values[i],
+        });
+        if (this.optionLeq.series[0].data.length > 777) {
+        this.optionLeq.series[0].data.pop();
+      }
+      }
+      this.leqValue = data.values[0].toFixed(2);
+      console.log(JSON.stringify(this.optionLeq.series[0].data));
+      console.log("length of data: " + this.optionLeq.series[0].data.length);
+    },
     /** 计划一次连接检查 */
     scheduleConnectionChecking(delay) {
       this.checkedTimes++;
@@ -381,6 +405,7 @@ if(this.optionLeq.series[0].data.length > 40) {
       this.isWsConnected = isOpen;
 
       if (isOpen) {
+        this.deviceStatus.isReady = true;
         // 连接已建立，停止定时检查重连
         this.stopConnectionChecking(true);
 
@@ -393,16 +418,14 @@ if(this.optionLeq.series[0].data.length > 40) {
         console.debug(`connected to ${this.wsUri} (${this.lastConnected})`);
       } else {
         // 连接已断开
-        this.cameraStatus = "";
         console.debug(`disconnected ${this.wsUri}`);
-        //
-        this.isDeviceConnected = false;
+        this.deviceInfo = { deviceID: null };
+        this.deviceStatus.isReady = false;
 
         // 清理状态
         window.clearInterval(this.updateDurationInterval);
         this.lastConnected = null;
         this.durationSeconds = null;
-        this.deviceInfo = null;
 
         if (this.checkedTimes < maxRetryTimes) {
           // 启动定时重连
@@ -415,7 +438,8 @@ if(this.optionLeq.series[0].data.length > 40) {
 
     /** 向所连接的网关发送 RPC 消息 */
     sendRpc(method, params) {
-      if (!this.isWsConnected || !this.isDeviceConnected) return;
+      // || !this.isDeviceConnected
+      if (!this.isWsConnected) return;
 
       this.$refs.wsClient.sendMessage(method, params);
     },
@@ -439,17 +463,17 @@ if(this.optionLeq.series[0].data.length > 40) {
         this.handleDeviceInfo(data.body);
       } else if (data.msgType === "sessionInfo") {
         this.handleSessionUpdate(data.body);
-      } else if (data.msgType === "dataFrame") {
-        const dataFrame = data.body;
-        if (dataFrame.frameType === "indicator-Leq") {
-          let d = new Date(dataFrame.timestamp * 1000);
-          //console.debug('Leq ts', d);
-        }
       }
+
       // json-rpc
-      else if (data.method === "deviceID") {
-        this.deviceInfo = { ...data.body };
-        console.debug("deviceInfo", this.deviceInfo);
+      else if (data.method === "dataFrame") {
+        // const dataFrame = data.params;
+        this.handleDataFrame(data.params);
+      } else if (data.method === "deviceID") {
+        this.handleDeviceInfo(data.params);
+      } else if (data.method === "deviceStatus") {
+        this.handleDeviceStatus(data.params);
+        // console.log(data);
       } else if (data.method === "sessionInfo") {
         this.handleSessionUpdate(data.params);
       }
@@ -457,26 +481,19 @@ if(this.optionLeq.series[0].data.length > 40) {
 
     /** 网关与设备的连接状态发生变化时，发来 deviceID 类型的消息 */
     handleDeviceInfo(deviceInfo) {
-      this.deviceInfo = { ...deviceInfo };
+      const prevReady = this.isDeviceConnected;
+
+      Object.assign(this.deviceInfo, deviceInfo);
       console.debug(
-        "deviceInfo received",
+        "device info updated",
         this.gwAddress,
         JSON.stringify(this.deviceInfo)
       );
-      const prevDevConn = this.isDeviceConnected;
-      this.isDeviceConnected =
-        this.deviceInfo &&
-        this.deviceInfo.deviceSN &&
-        (this.deviceInfo.deviceSN !== "0" ||
-          this.deviceInfo.ipAddress !== "0.0.0.0");
-
-      // 设备连接成功时显示待命状态，设备掉线则置空
-      this.cameraStatus = this.isDeviceConnected ? "standby" : "";
 
       // 设备连接状态发生变化
-      if (prevDevConn !== this.isDeviceConnected) {
+      if (prevReady !== this.isDeviceConnected) {
         console.debug(
-          "deviceInfo changed",
+          "box state-changed",
           this.gwAddress,
           "isDeviceConnected: ",
           this.isDeviceConnected
@@ -485,19 +502,49 @@ if(this.optionLeq.series[0].data.length > 40) {
       }
     },
 
+    handleDeviceStatus(deviceStatus) {
+      const prevReady = this.isDeviceConnected;
+
+      Object.assign(this.deviceStatus, deviceStatus);
+      console.debug(
+        "device status update",
+        this.gwAddress,
+        JSON.stringify(this.deviceStatus)
+      );
+
+      if (!deviceStatus.isReady) {
+        Vue.set(this, "deviceInfo", { deviceID: null });
+      }
+
+      // 设备连接状态发生变化
+      if (prevReady !== this.isDeviceConnected) {
+        console.debug(
+          "box state-changed",
+          this.gwAddress,
+          "isDeviceConnected: ",
+          this.isDeviceConnected
+        );
+        this.$emit("state-changed", this.gwAddress);
+      }
+    },
+    handleDataFrame(dataFrame) {
+      if (dataFrame.frameType === "Leq_A") {
+        // const dataFrame = dataFrame.params;
+        // console.log(dataFrame);
+        this.buildLeqData(dataFrame.timestamp, dataFrame.data);
+      }
+    },
     /** 采集起始和结束时收到的消息 */
     handleSessionUpdate(sessionInfo) {
       console.debug("sessionInfo:", JSON.stringify(sessionInfo, null, 1));
 
       if (sessionInfo.isRunning) {
-        this.cameraStatus = "recording";
-
         console.debug("session begin, ts:", sessionInfo.timestamp);
         this.sessionProgress.beginTimestamp = sessionInfo.timestamp;
         this.sessionProgress.endTimestamp = sessionInfo.timestamp;
         this.sessionProgress.position = this.sessionProgress.beginTimestamp;
 
-        if (sessionInfo.filename.endsWith("m3u8")) {
+        if (sessionInfo.filename && sessionInfo.filename.endsWith("m3u8")) {
           const url = `http://${this.gwAddress}${sessionInfo.filename}`;
           console.debug("hls url:", url);
           const playDelay = sessionInfo.isInitial ? 3000 : 20;
@@ -506,9 +553,24 @@ if(this.optionLeq.series[0].data.length > 40) {
             hlsPlayer.play(url);
           }, playDelay);
         }
+        if (sessionInfo.streamUrl && sessionInfo.streamUrl.endsWith("m3u8")) {
+          // //{host}/hls/soundcam.m3u8
+          let streamUrl = sessionInfo.streamUrl;
+          if (streamUrl.includes("{host}")) {
+            streamUrl = streamUrl.replace("{host}", this.gwAddress);
+          }
+          if (streamUrl.startsWith("//")) {
+            streamUrl = "http:" + streamUrl;
+          }
+          console.debug("hls url:", streamUrl);
+          //streamUrl = `http://${this.gwAddress}/hls/soundvis.m3u8`;
+          const playDelay = sessionInfo.isInitial ? 4000 : 20;
+          setTimeout(() => {
+            console.debug("hlsPlayer.play", streamUrl, playDelay);
+            hlsPlayer.play(streamUrl);
+          }, playDelay);
+        }
       } else {
-        this.cameraStatus = "standby";
-
         console.debug("session end, ts:", sessionInfo.timestamp);
         this.sessionProgress.endTimestamp = sessionInfo.timestamp;
         console.debug(

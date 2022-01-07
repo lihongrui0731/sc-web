@@ -213,7 +213,7 @@
                     </p>
                     <v-range-slider
                       :min="0"
-                      :max="24400"
+                      :max="100000"
                       step="100"
                       v-model="captureSettings.freqRange"
                     >
@@ -433,7 +433,7 @@
 </template>
 
 <script>
-import CamBox from "../components/cambox2.vue";
+import CamBox from "../components/cambox.vue";
 import * as appConfigModule from "../components/appConfig.js";
 import addressList from "../components/address.vue";
 import WsClient from "../components/WsClient.js";

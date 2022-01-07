@@ -35,7 +35,7 @@
         no-data-text="未选中设备或暂无数据"
         :footer-props="{
           'items-per-page-text': '',
-          showitemsperpage: false,
+          'items-per-page-all-text': '全部',
         }"
       >
         <template v-slot:item.name="{ item }">
@@ -47,7 +47,7 @@
           {{ new Date(item.mtime).toLocaleString() }}
         </template>
         <template v-slot:item.size="{ item }">
-          {{ item.size/1000000 }} MB
+          {{ Math.floor((item.size/1000000)*100)/100 }} MB
         </template>
       </v-data-table>
     </div>
@@ -64,7 +64,7 @@ export default {
       selectedGwAddrs: [],
       //dataTable
       headers: [
-        { text: "名称", align: "start", sortable: false, value: "name" },
+        { text: "文件名", align: "start", sortable: false, value: "name" },
         { text: "时间", value: "mtime" },
         { text: "文件大小", value: "size" },
       ],
