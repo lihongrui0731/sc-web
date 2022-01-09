@@ -64,7 +64,7 @@
               </v-btn-toggle>
             <!-- </v-card>
           </v-bottom-sheet> -->
-
+<!-- 控制面板 -->
           <v-dialog transition="dialog-bottom-transition" max-width="888">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -78,6 +78,7 @@
               <v-card class="settings">
                 <v-toolbar color="grey darken-2" dark>控制面板</v-toolbar>
                 <div class="setting-container">
+<!-- 采集选项 -->
                   <v-card class="pa-3 ml-2 mt-2 panel acq-opt">
                     <v-card-title>
                       <v-icon>mdi-eye-settings-outline</v-icon>采集选项
@@ -136,7 +137,7 @@
                       </v-btn>
                     </v-card-actions>
                   </v-card> -->
-
+<!-- 成像参数 -->
                   <v-card class="pa-3 panel mt-2 img-param">
                     <v-card-title>
                       <v-icon>mdi-image-auto-adjust</v-icon>成像参数
@@ -203,6 +204,7 @@
                       />
                     </div>
                   </v-card>
+<!-- 采集参数 -->
                   <v-card class="pa-3 mr-2 mt-2 panel acq-param">
                     <v-card-title>
                       <v-icon>mdi-tune</v-icon>采集参数
@@ -243,7 +245,7 @@
                     </v-card-actions>
                   </v-card>
                 </div>
-
+<!-- 对话框底栏 -->
                 <v-card-actions class="settings-panel-footer justify-end">
                   <p class="setting-note">更改配置即时生效</p>
                   <v-btn
@@ -256,6 +258,7 @@
             </template>
           </v-dialog>
         </div>
+
         <div class="box-container">
           <cam-box
             ref="box"
@@ -267,7 +270,7 @@
         </div>
       </div>
     </div>
-
+<!-- 原右侧控制面板 -->
     <!-- <v-navigation-drawer v-model="drawerRight" app clipped right width="308">
       <aside class="panel panel-opt__wrap">
         <div class="setting-container">
@@ -451,10 +454,6 @@ export default {
   // props: [ 'gwAddress', 'addressList'],
   data() {
     return {
-      drawerRight: null,
-      /** 控制左侧面板的显示 */
-      //   drawerLeft: true,
-      /** 控制右侧面板的显示 */
       drawerRight: false,
 
       // isWsConnected: false,

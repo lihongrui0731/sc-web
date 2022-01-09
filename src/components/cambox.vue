@@ -105,42 +105,15 @@ const maxRetryTimes = 5; // 重试连接次数上限
 let hlsPlayer;
 let imageLoader;
 
-// var xAxisData = [ 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -17, -18, -19, -20 ];
-// var xAxisData = [];
-// var data = [Math.random() * 150];
-// var data = [];
-// const d = [];
-// let demo = [];
-// const labels = [];
-// const values = [];
-// function roundValue(value) {
-  // return Math.round(value * 1000000) / 1000000;
-// }
-
-// buildLeqData();
-// function addData(shift) {
-
-//   data.unshift((Math.random() ) * 100 );
-//   if (data.length > xAxisData.length) {
-//     data.pop();
-//   }
-//   // now = new Date(+new Date(now) + oneDay);
-// }
-// for (var i = 1; i < 1000; i++) {
-  // addData();
-  // this.refreshCharts();
-// }
-// console.log(optionLeq);
-
 export default {
   components: {
     "ws-client": wsClient,
     "v-chart": VChart,
   },
-  // props: ["gwAddress"],
+  props: ["gwAddress"],
   data() {
     return {
-      gwAddress: "10.0.0.86",
+      // gwAddress: "10.0.0.86",
       updateDurationInterval: null,
       checkConnectionHandle: null,
       checkedTimes: 0,
@@ -171,8 +144,8 @@ export default {
       },
       batteryLevel: 0,
       leqValue: 0,
-      //chart
 
+      //chart
       optionLeq: {
         grid: {
           left: "2%",
@@ -248,7 +221,7 @@ export default {
             // min: -20,
             // max: 0,
           },
-          //       minorTick: {
+          // minorTick: {
           //   show: true
           // },
           // minorSplitLine: {
@@ -319,16 +292,6 @@ export default {
   },
 
   mounted() {
-    // this.optionLeq;
-    //异步初始化echarts
-    // function initEcharts() {
-    //   let newPromise = new Promise((resolve) => {
-    //     resolve();
-    //   });
-    //   newPromise.then(() => {
-    //     echarts.init(chartDom);
-    //   });
-    // }
     // setInterval(() => {
     // addData(true);
     // this.refreshCharts();
@@ -682,8 +645,8 @@ export default {
       } else {
         console.debug("session end, ts:", sessionInfo.timestamp);
         this.sessionProgress.endTimestamp = sessionInfo.timestamp;
-        this.optionLeq.series[0].data = [];
-        this.leqValue = 0;
+        this.optionLeq.series[0].data = [];   // 清空Leq图像数据
+        this.leqValue = 0;                    // 清空Leq值
         console.debug(
           "range: [" +
             this.sessionProgress.beginTimestamp +
