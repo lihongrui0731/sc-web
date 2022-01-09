@@ -48,13 +48,13 @@
 </template>
 
 <script>
-import WsClient from "./components/WsClient.js";
-import gwAddress from "./components/address.vue";
+// import WsClient from "./components/WsClient.js";
+// import gwAddress from "./components/address.vue";
 
 export default {
-  components: {
-    'ws-client': WsClient,
-  },
+  // components: {
+  //   'ws-client': WsClient,
+  // },
   data() {
     return {
       drawerLeft: null,
@@ -122,12 +122,12 @@ export default {
 
 /* app layout */
 
-/* .panel-opt__wrap {
+.panel-opt__wrap {
   height: 100%;
   width: 100%;
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
-} */
+}
 </style>

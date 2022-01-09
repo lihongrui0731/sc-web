@@ -1,5 +1,5 @@
 <template>
-  <div class="cambox">
+  <div class="cambox v-card v-sheet">
     <img
       ref="sampleImg"
       style="display: none"
@@ -13,13 +13,13 @@
       @message-received="onWsMessageReceived"
     ></ws-client>
 
-    <div class="info-row top">
+    <div class="info-row top ">
       <input
         type="checkbox"
         disabled
         v-model="isWsConnected"
         id="ws-state-checkbox"
-        class="mt-2 mr-2"
+        class=" mr-2"
       />
       <label class="info-cell" for="ws-state-checkbox"
         >{{ `网关地址: ${gwAddress}` }}&nbsp;</label
@@ -30,7 +30,8 @@
       >
       <v-spacer></v-spacer>
       <label class="info-cell leq-label"
-        >{{ `Leq: ${leqValue}` }}&nbsp;dBA&nbsp;</label>
+        >{{ `Leq: ${leqValue}` }}&nbsp;dBA&nbsp;</label
+      >
       <label class="info-cell battery-level">
         &nbsp;{{ `电量: ${batteryLevel}%` }}
       </label>
@@ -41,7 +42,7 @@
       <v-chart class="chart" :option="optionLeq"></v-chart>
     </div>
 
-    <v-list class="videoStream">
+    <!-- <v-list class="videoStream">
       <v-list-item>
         <v-list-group :value="true" no-action sub-group>
           <template color="grey darken-2" v-slot:activator>
@@ -51,25 +52,27 @@
               >
             </v-list-item-content>
           </template>
-          <v-list-item-content>
-            <canvas
-              ref="camCanvas"
-              :width="pictureSize.width"
-              :height="pictureSize.height"
-              class="cam-canvas"
-              :style="canvasStyle"
-            />
-            <video
-              ref="camVideo"
-              :width="pictureSize.width"
-              :height="pictureSize.height"
-              class="cam-video"
-              :style="videoStyle"
-            />
-          </v-list-item-content>
+          <v-list-item-content> -->
+
+    <canvas
+      ref="camCanvas"
+      :width="pictureSize.width"
+      :height="pictureSize.height"
+      class="cam-canvas"
+      :style="canvasStyle"
+    />
+    <video
+      ref="camVideo"
+      :width="pictureSize.width"
+      :height="pictureSize.height"
+      class="cam-video"
+      :style="videoStyle"
+    />
+
+    <!-- </v-list-item-content>
         </v-list-group>
       </v-list-item>
-    </v-list>
+    </v-list> -->
 
     <div class="info-row bottom">
       <span class="info-cell mr-3">{{ deviceInfoText }}</span>
@@ -106,13 +109,13 @@ let imageLoader;
 // var xAxisData = [];
 // var data = [Math.random() * 150];
 // var data = [];
-const d = [];
-let demo = [];
-const labels = [];
-const values = [];
-function roundValue(value) {
-  return Math.round(value * 1000000) / 1000000;
-}
+// const d = [];
+// let demo = [];
+// const labels = [];
+// const values = [];
+// function roundValue(value) {
+  // return Math.round(value * 1000000) / 1000000;
+// }
 
 // buildLeqData();
 // function addData(shift) {
@@ -123,10 +126,10 @@ function roundValue(value) {
 //   }
 //   // now = new Date(+new Date(now) + oneDay);
 // }
-for (var i = 1; i < 1000; i++) {
+// for (var i = 1; i < 1000; i++) {
   // addData();
   // this.refreshCharts();
-}
+// }
 // console.log(optionLeq);
 
 export default {
@@ -134,10 +137,10 @@ export default {
     "ws-client": wsClient,
     "v-chart": VChart,
   },
-  props: ["gwAddress"],
+  // props: ["gwAddress"],
   data() {
     return {
-      // gwAddress: "192.168.1.151",
+      gwAddress: "10.0.0.86",
       updateDurationInterval: null,
       checkConnectionHandle: null,
       checkedTimes: 0,
@@ -173,48 +176,130 @@ export default {
       optionLeq: {
         grid: {
           left: "2%",
-          right: "10%",
-          bottom: "20%",
+          right: "8%",
+          bottom: "30%",
           top: "10%",
         },
         animation: false,
         xAxis: {
-          type: "time",
+          name: "时间(s)",
+          nameGap: 20,
+          nameLocation: "middle",
+          nameTextStyle: {
+            fontSize: 10,
+          },
+          // type: "time",
+          type: "category",
+          // type: "value",
           boundaryGap: false,
           // min: -20,
           // max: 0,
-          interval: 1000,
+          // interval: 1,
           inverse: true,
-          // data: [],
+          // data: [
+          //   "0","-1","-2","-3","-4","-5","-6","-7","-8","-9","-10","-11","-12","-13","-14","-15","-16","-17","-18","-19","-20",
+          // ],
+          data: [
+            "0",
+            "-0.5",
+            "-1",
+            "-1.5",
+            "-2",
+            "-2.5",
+            "-3",
+            "-3.5",
+            "-4",
+            "-4.5",
+            "-5",
+            "-5.5",
+            "-6",
+            "-6.5",
+            "-7",
+            "-7.5",
+            "-8",
+            "-8.5",
+            "-9",
+            "-9.5",
+            "-10",
+            "-10.5",
+            "-11",
+            "-11.5",
+            "-12",
+            "-12.5",
+            "-13",
+            "-13.5",
+            "-14",
+            "-14.5",
+            "-15",
+            "-15.5",
+            "-16",
+            "-16.5",
+            "-17",
+            "-17.5",
+            "-18",
+            "-18.5",
+            "-19",
+            "-19.5",
+            "-20",
+          ],
+          // data: [0, -0.5, -1, -1.5, -2, -2.5, -3, -3.5, -4, -4.5, -5, -5.5, -6, -6.5, -7, -7.5, -8, -8.5, -9, -9.5, -10, -10.5, -11, -11.5, -12, -12.5, -13, -13.5, -14, -14.5, -15, -15.5, -16, -16.5, -17, -17.5, -18, -18.5, -19, -19.5, -20],
           axisLabel: {
-            formatter: "{s}:{SSS}",
-            // show: true,
-            show: false,
-            interval: 500,
+            interval: 1,
+            // min: -20,
+            // max: 0,
           },
+          //       minorTick: {
+          //   show: true
+          // },
+          // minorSplitLine: {
+          //   show: true
+          // },
+          // axisLabel: {
+          //   formatter: "{s}:{SSS}",
+          //   // show: true,
+          //   show: false,
+          //   interval: 500,
+          // },
           splitLine: {
             show: true,
-            interval: 1000,
+            // interval: 1000,
           },
           splitNumber: 20,
         },
         yAxis: {
+          name: "Leq(dBA)",
+          nameGap: 27,
+          nameRotate: -90,
+          nameTextStyle: {
+            fontSize: 10,
+          },
+          nameLocation: "middle",
           // position: "left",
           position: "right",
           boundaryGap: [0, "50%"],
           type: "value",
+          // data: [],
           min: function (value) {
-            return (value.min - 10).toFixed(0);
+            return (value.min - 5).toFixed(0);
           },
           max: function (value) {
-            return (value.max + 10).toFixed(0);
+            return (value.max + 5).toFixed(0);
           },
-          interval: 10,
-          axisLabel: {
+          axisTick: {
             show: true,
           },
+
+          minorSplitLine: {
+            show: true,
+          },
+          // interval: 20,
+          axisLabel: {
+            show: true,
+            fontSize: 11,
+          },
           axisLine: {
-            show: false,
+            // show: false,
+            interval: 20,
           },
         },
         series: [
@@ -244,11 +329,14 @@ export default {
     //     echarts.init(chartDom);
     //   });
     // }
-    setInterval(() => {
-      // addData(true);
-      // this.refreshCharts();
-      // this.buildLeqData();
-    }, 500);
+    // setInterval(() => {
+    // addData(true);
+    // this.refreshCharts();
+    // this.buildLeqData();
+    // }, 500);
+    if (this.optionLeq.series[0].data.length !== 0) {
+      this.optionLeq.series[0].data = [];
+    }
     // 启动连接维持定时器
     if (this.gwAddress) {
       this.checkWsConnection(true);
@@ -329,24 +417,45 @@ export default {
     //   this.optionLeq.xAxis.data = labels;
     //   this.optionLeq.series.data = values;
     // },
-    buildLeqData(timestamp, data) {
-      let base = Date.parse(timestamp);
-      let d = [];
-      const dt = data.dt;
-      // const data = dataFrame.data;
-      console.log(moment(base).format("hh:mm:ss.SSS"));
+    // buildLeqData(timestamp, data) {
+    //   let base = Date.parse(timestamp);
+    //   let d = [];
+    //   const dt = data.dt;
+    //   // const data = dataFrame.data;
+    //   console.log(moment(base).format("hh:mm:ss.SSS"));
 
-      for (let i = 0; i < 20; i++) {
-        this.optionLeq.series[0].data.unshift({
-          // timestamp: moment(base + i * dt).format("hh:mm:ss.SSS"),
-          timestamp: base + i * dt,
-          value: data.values[i],
-        });
-        if (this.optionLeq.series[0].data.length > 777) {
+    //   // for (let i = 0; i < 20; i++) {
+    //     // this.optionLeq.series[0].data.unshift({
+    //     this.optionLeq.yAxis.data.unshift(
+    //       // timestamp: moment(base + i * dt).format("hh:mm:ss.SSS"),
+    //       // timestamp: base + i * dt,
+    //       // value: data.values[i],
+    //       data.values[0].toFixed(1)
+    //     );
+    //     // if (this.optionLeq.series[0].data.length > 1200) {
+    //     // this.optionLeq.series[0].data.pop();
+    //   // }
+    //   if (this.optionLeq.yAxis.data.length > 20) {
+    //     this.optionLeq.yAxis.data.pop();
+    //   }
+    //   // }
+    //   this.leqValue = data.values[0].toFixed(2);
+    //   // console.log(JSON.stringify(this.optionLeq.series[0].data));
+    //   console.log(JSON.stringify(this.optionLeq.yAxis.data));
+    //   // console.log("length of data: " + this.optionLeq.series[0].data.length);
+    //   console.log("length of data: " + this.optionLeq.yAxis.data.length);
+    // },
+    buildLeqData(timestamp, data) {
+      // console.log(moment(base).format("hh:mm:ss.SSS"));
+      // this.leqValue = data.values[0].toFixed(2);
+      this.leqValue = Math.max(...data.values).toFixed(2);
+
+      this.optionLeq.series[0].data.unshift(
+        Math.max(...data.values).toFixed(1)
+      );
+      if (this.optionLeq.series[0].data.length > 41) {
         this.optionLeq.series[0].data.pop();
       }
-      }
-      this.leqValue = data.values[0].toFixed(2);
       console.log(JSON.stringify(this.optionLeq.series[0].data));
       console.log("length of data: " + this.optionLeq.series[0].data.length);
     },
@@ -573,6 +682,8 @@ export default {
       } else {
         console.debug("session end, ts:", sessionInfo.timestamp);
         this.sessionProgress.endTimestamp = sessionInfo.timestamp;
+        this.optionLeq.series[0].data = [];
+        this.leqValue = 0;
         console.debug(
           "range: [" +
             this.sessionProgress.beginTimestamp +
@@ -629,12 +740,13 @@ export default {
   color: rgba(0, 0, 0, 0.7);
 }
 .cambox .info-row.top .info-cell {
-  margin-top: 6px;
+  /* margin-top: 6px; */
 }
 .cambox .info-row.top {
   background-color: #bdbdbd;
   display: flex;
   flex-flow: row nowrap;
+  align-items: center;
 }
 .cambox .info-row.top .battery-life {
   align-self: flex-end;

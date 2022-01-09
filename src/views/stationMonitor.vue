@@ -32,7 +32,7 @@
           @click="drawerRight = !drawerRight"
         ></v-app-bar-nav-icon> -->
         <div class="setting-btn-row">
-          <v-bottom-sheet max-width="300px" inset>
+          <!-- <v-bottom-sheet max-width="300px" inset>
             <template v-slot:activator="{ on, attrs }">
               <v-btn class="acq-ctl-btn-label" color="red" dark elevation="3" v-bind="attrs" v-on="on">
                 采集控制
@@ -41,8 +41,9 @@
             <v-card tile>
               <v-card-title>
                 <v-icon>mdi-play-network-outline</v-icon>设备控制
-              </v-card-title>
-              <v-card-actions class="justify-center ">
+              </v-card-title> -->
+              <v-btn-toggle v-model="toggle_exclusive" rounded class="align-center">
+              <!-- <v-card-actions class="justify-center "> -->
                 <v-btn
                   small
                   @click="toolbarBtn('record')"
@@ -59,9 +60,10 @@
                 >
                   <v-icon>mdi-stop</v-icon>
                 </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-bottom-sheet>
+              <!-- </v-card-actions> -->
+              </v-btn-toggle>
+            <!-- </v-card>
+          </v-bottom-sheet> -->
 
           <v-dialog transition="dialog-bottom-transition" max-width="888">
             <template v-slot:activator="{ on, attrs }">
@@ -435,16 +437,17 @@
 <script>
 import CamBox from "../components/cambox.vue";
 import * as appConfigModule from "../components/appConfig.js";
-import addressList from "../components/address.vue";
+// import addressList from "../components/address.vue";
 import WsClient from "../components/WsClient.js";
-import hlsPlayer from "../components/HlsPlayer";
+// import hlsPlayer from "../components/HlsPlayer";
 // import { mdiCogOutline } from '@mdi';
 var imageModes = ["auto", "fixed", "avg"];
 const methodName_SetParam = "setParam";
 
-// let selectedGwAddrs = localStorage.getItem('gwAddress')
 export default {
-  components: { "cam-box": CamBox, "ws-client": WsClient },
+  components: { "cam-box": CamBox, 
+  // "ws-client": WsClient 
+  },
   // props: [ 'gwAddress', 'addressList'],
   data() {
     return {
@@ -454,19 +457,19 @@ export default {
       /** 控制右侧面板的显示 */
       drawerRight: false,
 
-      isWsConnected: false,
+      // isWsConnected: false,
 
-      appInfo: appConfigModule.appInfo,
-      uiOptions: appConfigModule.uiOptions,
+      // appInfo: appConfigModule.appInfo,
+      // uiOptions: appConfigModule.uiOptions,
 
       /** 网关提供 WebSocket 服务的端口 */
-      gwPort: 6380,
+      // gwPort: 6380,
 
       /* 网关 ws 的确定方式：从列表中选择，或采用当前页面所在主机地址 */
-      gwPickMode: appConfigModule.gwPickMode,
+      // gwPickMode: appConfigModule.gwPickMode,
 
       /** 可选择的网关地址列表 */
-      gwAddresses: [...appConfigModule.gwAddresses],
+      // gwAddresses: [...appConfigModule.gwAddresses],
 
       /** 当前选定要连接的网关地址 */
       selectedGwAddrs: [],
@@ -503,6 +506,7 @@ export default {
       },
 
       running: null,
+      toggle_exclusive: undefined,
     };
   },
   computed: {
@@ -705,7 +709,7 @@ export default {
   display: flex;
   flex-direction: row;
   align-self: flex-end;
-  gap: 8px;
+  gap: 15px;
 }
 .acq-ctl-btn-label {
   font-weight: 700;
@@ -785,46 +789,26 @@ export default {
   padding: 0;
   /* min-width: 80px; */
 }
+.panel .v-card__title {
+  padding: 8px 0;
+}
 
-.cambox {
-  margin: 8px 0;
-  border: 1px solid lightgray;
-  position: relative;
-  border-radius: 6px;
+.panel .v-card__actions {
+  justify-content: center;
+}
+
+.panel .v-input--selection-controls {
+  margin-top: 0;
+}
+
+/* app layout */
+
+.panel-opt__wrap {
+  height: 100%;
+  width: 100%;
   display: flex;
   flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
 }
-
-.cambox .cam-canvas,
-.cambox .cam-video {
-  margin: 0 -1px;
-}
-
-.cambox .info-row {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: flex-start;
-  font-size: 12px;
-  padding: 0 12px;
-}
-
-.cambox .info-row .v-input,
-.cambox .info-row .v-label {
-  margin: 0 4px 0 0;
-  font-size: 12px;
-}
-
-/* .cambox .info-cell {
-  display: inline-block;
-  color: rgba(0, 0, 0, 0.38);
-  margin-right: 12px;
-} */
-
-/* .cambox .info-row.top .info-cell {
-  margin-top: 8px;
-}
-
-.cambox .info-row.bottom .info-cell {
-  margin-bottom: 8px;
-} */
 </style>

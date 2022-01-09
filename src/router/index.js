@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+import Home from "../views/test.vue";
 import Gateway from "../views/gateway.vue";
 import Data from "../views/data.vue";
 import StationMonitor from "../views/stationMonitor.vue"
