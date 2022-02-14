@@ -10,7 +10,7 @@
     <div class="addNew" style="padding: 15px">
       <form class="type-in">
         <label class="addNewLabel" for="newAddress">添加网关：</label>
-        <input id="newAdress" v-model="newAddress" />
+        <input class="addNewInput" id="newAdress" v-model="newAddress" />
         <v-btn
           elevation="2"
           depressed
@@ -96,7 +96,7 @@ export default {
   line-height: 20px;
   white-space: nowrap;
 }
-input {
+.addNewInput {
   background-color: #FAFAFA;
   border: 2px solid black;
 }
