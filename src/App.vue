@@ -4,7 +4,7 @@
     <v-navigation-drawer v-model="drawerLeft" app class="gw-nav">
       <v-list-item>
         <v-list-item-content>
-          <v-list-item-title class="nav-title"> 击穿定位系统 </v-list-item-title>
+          <v-list-item-title class="nav-title"> 声学相机控制系统 </v-list-item-title>
           <v-list-item-subtitle class="nav-subtitle"> Rhythm-tech </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
